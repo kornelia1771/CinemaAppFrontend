@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Typography, Paper, Container, TextField, IconButton, CircularProgress } from '@mui/material';
+import { Box, Button, Typography, Paper, Container, TextField, IconButton, CircularProgress, Snackbar, Alert } from '@mui/material';
 import { Eye, EyeOff, Check, X } from 'lucide-react';
+import ReCAPTCHA from 'react-google-recaptcha';
+
 import { colors } from '../constants/theme';
 import HeaderLogin from '../components/HeaderLogin';
 
-// Import zewnętrznych stylów (wspólne z LoginPage)
+// External styles import
 import {
     LoginSafeAreaContainer, LoginCenterArea, LoginFormWrapper,
     LoginFormScroll, LoginFormScrollContent, LoginTitle,
@@ -16,7 +18,7 @@ import {
     LoginFieldError, LoginPasswordRequirement, LoginPasswordRequirementRow
 } from '../styles/LoginStyles';
 
-// Import stringów rejestracji
+// Registration strings import
 import {
     RegisterTitle, RegisterDescription, NameLabel, NamePlaceholder,
     SurnameLabel, SurnamePlaceholder, EmailLabel, EmailPlaceholder,
@@ -26,40 +28,55 @@ import {
     PasswordUppercase, PasswordLowercase, PasswordNumber, PasswordSpecial
 } from '../strings/loginStrings';
 
-// Importy helperów i walidacji
-import { handleSignUp, handleDevSignUp, capitalizeFirst } from '../helper/LoginHelper';
+// Helpers and validation imports
+import { capitalizeFirst } from '../helper/LoginHelper';
 import {
     emailRegex, nameRegex, surnameRegex, passwordRegex,
     uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex, nameOnlyRegex
 } from "../helper/SharedHeper";
 
+// API and Captcha Key import
+import { AuthApi } from '../api/AuthApi';
+import {recaptchaKey} from "../config/ReCaptchaKey";
 
 export default function RegisterPage() {
     const navigate = useNavigate();
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
+
+    // Form states
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+    // UI / Validation states
     const [loading, setLoading] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const [showValidationError, setShowValidationError] = useState(false);
+    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
     const [touchedName, setTouchedName] = useState(false);
     const [touchedSurname, setTouchedSurname] = useState(false);
     const [touchedEmail, setTouchedEmail] = useState(false);
     const [touchedPassword, setTouchedPassword] = useState(false);
     const [touchedConfirm, setTouchedConfirm] = useState(false);
 
-    // Sprawdzanie poprawności całego formularza
+    // Snackbar / Toast states
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+
+    // Client-side form validation
     const isFormValid = (
         nameRegex.test(name) &&
         surnameRegex.test(surname) &&
         emailRegex.test(email) &&
         passwordRegex.test(password) &&
-        password === confirm
+        password === confirm &&
+        captchaToken !== null
     );
 
-    // Dynamiczne sprawdzanie kryteriów hasła
+    // Live password requirements check
     const passwordRequirements = {
         minLength: password.length >= 8,
         hasUppercase: uppercaseRegex.test(password),
@@ -68,19 +85,93 @@ export default function RegisterPage() {
         hasSpecial: specialCharRegex.test(password),
     };
 
+    // Main registration handler with API integration
+    const handleRegisterSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!isFormValid || !captchaToken) return;
+
+        setLoading(true);
+
+        try {
+            const response = await AuthApi.register({
+                firstName: name,
+                lastName: surname,
+                email: email,
+                password: password,
+                captchaToken: captchaToken
+            });
+
+            // Set up success feedback inside the Toast/Snackbar
+            setSnackbarSeverity('success');
+            setSnackbarMessage(response.message || "Registration successful! Please check your email to activate your account.");
+            setSnackbarOpen(true);
+
+            // Clear all input fields immediately
+            setName('');
+            setSurname('');
+            setEmail('');
+            setPassword('');
+            setConfirm('');
+            setCaptchaToken(null);
+            recaptchaRef.current?.reset();
+
+            setTouchedName(false);
+            setTouchedSurname(false);
+            setTouchedEmail(false);
+            setTouchedPassword(false);
+            setTouchedConfirm(false);
+            setIsPasswordVisible(false);
+            setIsConfirmPasswordVisible(false);
+
+            // Redirect to sign in page after a 3-second delay
+            setTimeout(() => {
+                navigate('/login'); // Make sure this matches your router path (e.g., '/login' or '/signin')
+            }, 3000);
+
+        } catch (error: any) {
+            // Set up error feedback inside the Toast/Snackbar
+            setSnackbarSeverity('error');
+            setSnackbarMessage(error.message || "An error occurred during communication with the server.");
+            setSnackbarOpen(true);
+
+            // Reset recaptcha token on failure
+            setCaptchaToken(null);
+            recaptchaRef.current?.reset();
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Developer function for quick form filling
+    const handleDevSignUpClick = () => {
+        setName('John');
+        setSurname('Doe');
+        setEmail(`john.doe.${Date.now()}@example.com`);
+        setPassword('Password123!');
+        setConfirm('Password123!');
+        setTouchedName(true);
+        setTouchedSurname(true);
+        setTouchedEmail(true);
+        setTouchedPassword(true);
+        setTouchedConfirm(true);
+    };
+
+    // Handle toast closing manually if needed
+    const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
+    };
+
     return (
         <Box sx={{ ...LoginSafeAreaContainer(), flexDirection: 'column' }}>
-            {/* Zewnętrzny mobilny Header ukrywamy na rzecz HeaderLogin wewnątrz Paper */}
-            {/* <Header /> */}
-
             <Container maxWidth={false} disableGutters sx={LoginCenterArea()}>
                 <Paper elevation={3} sx={{ ...LoginFormWrapper(), marginTop: '8px' }}>
                     <Box sx={{ ...LoginFormScroll(), ...LoginFormScrollContent(), overflowY: 'auto' }}>
 
-                        {/* Nowy, spójny nagłówek z ikoną aplikacji */}
                         <HeaderLogin />
 
-                        {/* Tytuł sekcji Rejestracji */}
                         <Typography variant="h5" component="h2" sx={LoginTitle()}>
                             {RegisterTitle}
                         </Typography>
@@ -89,9 +180,9 @@ export default function RegisterPage() {
                             {RegisterDescription}
                         </Typography>
 
-                        <Box component="form" noValidate sx={LoginFormContainer()}>
+                        <Box component="form" noValidate onSubmit={handleRegisterSubmit} sx={LoginFormContainer()}>
 
-                            {/* Pole Imię */}
+                            {/* First Name Field */}
                             <Typography sx={LoginInputLabel()}>{NameLabel}</Typography>
                             <TextField
                                 fullWidth
@@ -102,7 +193,6 @@ export default function RegisterPage() {
                                     const sanitized = e.target.value.replace(nameOnlyRegex, '');
                                     setName(capitalizeFirst(sanitized));
                                     setTouchedName(true);
-                                    setShowValidationError(false);
                                 }}
                                 onBlur={() => setTouchedName(true)}
                                 disabled={loading}
@@ -114,7 +204,7 @@ export default function RegisterPage() {
                                 <Typography sx={LoginFieldError()}>{IncorrectDataFormat}</Typography>
                             )}
 
-                            {/* Pole Nazwisko */}
+                            {/* Last Name Field */}
                             <Typography sx={LoginInputLabel()}>{SurnameLabel}</Typography>
                             <TextField
                                 fullWidth
@@ -125,7 +215,6 @@ export default function RegisterPage() {
                                     const sanitized = e.target.value.replace(nameOnlyRegex, '');
                                     setSurname(capitalizeFirst(sanitized));
                                     setTouchedSurname(true);
-                                    setShowValidationError(false);
                                 }}
                                 onBlur={() => setTouchedSurname(true)}
                                 disabled={loading}
@@ -137,7 +226,7 @@ export default function RegisterPage() {
                                 <Typography sx={LoginFieldError()}>{IncorrectDataFormat}</Typography>
                             )}
 
-                            {/* Pole Email */}
+                            {/* Email Field */}
                             <Typography sx={LoginInputLabel()}>{EmailLabel}</Typography>
                             <TextField
                                 fullWidth
@@ -148,7 +237,6 @@ export default function RegisterPage() {
                                 onChange={(e) => {
                                     setEmail(e.target.value);
                                     setTouchedEmail(true);
-                                    setShowValidationError(false);
                                 }}
                                 onBlur={() => setTouchedEmail(true)}
                                 disabled={loading}
@@ -160,7 +248,7 @@ export default function RegisterPage() {
                                 <Typography sx={LoginFieldError()}>{IncorrectDataFormat}</Typography>
                             )}
 
-                            {/* Pole Hasło */}
+                            {/* Password Field */}
                             <Typography sx={LoginInputLabel()}>{PasswordLabel}</Typography>
                             <Box sx={{ ...LoginPasswordInputWrapper(), display: 'flex', alignItems: 'center' }}>
                                 <TextField
@@ -172,7 +260,6 @@ export default function RegisterPage() {
                                     onChange={(e) => {
                                         setPassword(e.target.value);
                                         setTouchedPassword(true);
-                                        setShowValidationError(false);
                                     }}
                                     onBlur={() => setTouchedPassword(true)}
                                     disabled={loading}
@@ -192,7 +279,7 @@ export default function RegisterPage() {
                                 </IconButton>
                             </Box>
 
-                            {/* Lista wymagań dotyczących hasła (walidacja na żywo) */}
+                            {/* Password Requirements List */}
                             {(touchedPassword || password.length > 0) && (
                                 <Box sx={{ marginBottom: '4px', marginTop: '4px' }}>
                                     <Box sx={LoginPasswordRequirementRow()}>
@@ -218,19 +305,18 @@ export default function RegisterPage() {
                                 </Box>
                             )}
 
-                            {/* Pole Potwierdź Hasło */}
+                            {/* Confirm Password Field */}
                             <Typography sx={{ ...LoginInputLabel(), marginTop: '12px' }}>{ConfirmPasswordLabel}</Typography>
                             <Box sx={{ ...LoginPasswordInputWrapper(), display: 'flex', alignItems: 'center' }}>
                                 <TextField
                                     fullWidth
                                     variant="standard"
-                                    type={isPasswordVisible ? "text" : "password"}
+                                    type={isConfirmPasswordVisible ? "text" : "password"}
                                     placeholder={ConfirmPasswordPlaceholder}
                                     value={confirm}
                                     onChange={(e) => {
                                         setConfirm(e.target.value);
                                         setTouchedConfirm(true);
-                                        setShowValidationError(false);
                                     }}
                                     onBlur={() => setTouchedConfirm(true)}
                                     disabled={loading}
@@ -238,29 +324,44 @@ export default function RegisterPage() {
                                     InputProps={{ disableUnderline: true }}
                                     sx={LoginPasswordInputField()}
                                 />
+                                <IconButton
+                                    onClick={() => setIsConfirmPasswordVisible(v => !v)}
+                                    sx={{ ...LoginPasswordToggleAbsolute(), position: 'absolute', right: '8px' }}
+                                >
+                                    {isConfirmPasswordVisible ? (
+                                        <Eye size={20} color={colors.darkgrey} />
+                                    ) : (
+                                        <EyeOff size={20} color={colors.darkgrey} />
+                                    )}
+                                </IconButton>
                             </Box>
                             {touchedConfirm && confirm.length > 0 && confirm !== password && (
-                                <Typography sx={{...LoginFieldError(), marginTop: '6px'}}>{PasswordsDoNotMatch}</Typography>
+                                <Typography sx={{ ...LoginFieldError(), marginTop: '6px' }}>{PasswordsDoNotMatch}</Typography>
                             )}
 
-                            {/* Kontener pusty / błędu ogólnego walidacji */}
+                            {/* Google reCAPTCHA v2 Component */}
+                            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '10px', marginBottom: '10px' }}>
+                                <ReCAPTCHA
+                                    ref={recaptchaRef}
+                                    sitekey={recaptchaKey}
+                                    onChange={(token) => setCaptchaToken(token)}
+                                    onExpired={() => setCaptchaToken(null)}
+                                />
+                            </Box>
+
                             <Box sx={LoginValidationContainer()} />
 
-                            {/* Przycisk Zarejestruj (Główny) */}
+                            {/* Sign Up Button */}
                             <Button
+                                type="submit"
                                 variant="contained"
                                 fullWidth
                                 disabled={!isFormValid || loading}
-                                onClick={() => handleSignUp(
-                                    name, surname, email, password, isFormValid,
-                                    setLoading, setTouchedName, setTouchedSurname, setTouchedEmail,
-                                    setTouchedPassword, setTouchedConfirm, setShowValidationError, navigate
-                                )}
                                 sx={{
                                     ...LoginSignInButton(),
                                     ...LoginSignInButtonText(),
                                     textTransform: 'none',
-                                    marginTop: '24px',
+                                    marginTop: '12px',
                                     ...(!isFormValid || loading ? LoginSignInButtonDisabled() : {})
                                 }}
                             >
@@ -271,15 +372,13 @@ export default function RegisterPage() {
                                 )}
                             </Button>
 
-                            {/* Przycisk Deweloperski (Autouzupełnianie / Rejestracja dev) */}
+                            {/* Developer Quick-Fill Button */}
                             <Button
+                                type="button"
                                 variant="contained"
                                 fullWidth
                                 disabled={loading}
-                                onClick={() => handleDevSignUp(
-                                    setName, setSurname, setEmail, setPassword, setConfirm,
-                                    setLoading, navigate
-                                )}
+                                onClick={handleDevSignUpClick}
                                 sx={{
                                     ...LoginSignInButton(),
                                     ...LoginSignInButtonText(),
@@ -290,17 +389,32 @@ export default function RegisterPage() {
                                     '&:hover': { backgroundColor: colors.borderGrey }
                                 }}
                             >
-                                {loading ? (
-                                    <CircularProgress size={24} />
-                                ) : (
-                                    SignUpDevUser
-                                )}
+                                {SignUpDevUser}
                             </Button>
 
                         </Box>
                     </Box>
                 </Paper>
             </Container>
+
+            {/* Notification Toast/Snackbar Component */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                // anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity={snackbarSeverity}
+                    sx={{ width: '100%', borderRadius: '8px', fontWeight: '500' }}
+                    elevation={6}
+                    variant="filled"
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }
