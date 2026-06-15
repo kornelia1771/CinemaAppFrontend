@@ -240,7 +240,7 @@ export default function RegisterPage() {
                                 />
                             </Box>
                             {touchedConfirm && confirm.length > 0 && confirm !== password && (
-                                <Typography sx={LoginFieldError()}>{PasswordsDoNotMatch}</Typography>
+                                <Typography sx={{...LoginFieldError(), marginTop: '6px'}}>{PasswordsDoNotMatch}</Typography>
                             )}
 
                             {/* Kontener pusty / błędu ogólnego walidacji */}

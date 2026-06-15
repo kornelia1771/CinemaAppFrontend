@@ -33,7 +33,7 @@ export const LoginFormWrapper = () => ({
     paddingTop: '12px',
     paddingBottom: '12px',
     borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.12)', // Odpowiednik shadowOffset/opacity/radius z RN
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.12)',
 });
 
 export const LoginInnerContent = () => ({
@@ -79,12 +79,13 @@ export const LoginButtonContainer = () => ({
     marginTop: '12px',
 });
 
+// ZMNIEJSZONO: Button podstawowy
 export const LoginButton = () => ({
     backgroundColor: colors.black,
-    paddingTop: '15px',
-    paddingBottom: '15px',
-    paddingLeft: '30px',
-    paddingRight: '30px',
+    paddingTop: '10px',        // Zmniejszono z 15px
+    paddingBottom: '10px',     // Zmniejszono z 15px
+    paddingLeft: '24px',        // Dostosowano proporcjonalnie z 30px
+    paddingRight: '24px',       // Dostosowano proporcjonalnie z 30px
     borderRadius: '8px',
     display: 'flex',
     alignItems: 'center',
@@ -119,7 +120,7 @@ export const LoginFormScrollContent = () => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: '12px',
+    paddingTop: '4px',
     paddingBottom: '16px',
 });
 
@@ -127,7 +128,7 @@ export const LoginFormContainer = () => ({
     width: '100%',
     maxWidth: '360px',
     marginBottom: 0,
-    padding: '16px',
+    padding: '0px 16px 16px 16px',
     borderRadius: '10px',
     boxSizing: 'border-box',
     display: 'flex',
@@ -151,42 +152,45 @@ export const LoginInputLabel = () => ({
     alignSelf: 'flex-start',
 });
 
+// ZMNIEJSZONO: Wysokość zwykłego inputu poprzez mniejszy padding pionowy
 export const LoginInput = () => ({
-    width: '100%',                     // Wymusza pełną szerokość kontenera
+    width: '100%',
     backgroundColor: colors.lightgrey,
     borderRadius: '8px',
     paddingLeft: '15px',
     paddingRight: '15px',
-    paddingTop: '12px',
-    paddingBottom: '12px',
+    paddingTop: '8px',          // Zmniejszono z 12px
+    paddingBottom: '8px',       // Zmniejszono z 12px
     marginBottom: '15px',
     fontSize: fontSizes.medium,
     color: colors.black,
-    boxSizing: 'border-box',           // DODANO: Zapewnia identyczne obliczanie szerokości z paddingiem jak w haśle
+    boxSizing: 'border-box',
 });
 
 export const LoginPasswordInputWrapper = () => ({
     width: '100%',
     position: 'relative',
-    marginBottom: '15px',
+    marginBottom: '4px',
 });
 
+// ZMNIEJSZONO: Wysokość inputu hasła poprzez mniejszy padding pionowy
 export const LoginPasswordInputField = () => ({
-    width: '100%',                     // Wymusza pełną szerokość kontenera
+    width: '100%',
     backgroundColor: colors.lightgrey,
     borderRadius: '8px',
     paddingLeft: '15px',
-    paddingRight: '44px',              // Zostaje większy prawy padding na ikonę oka
-    paddingTop: '12px',
-    paddingBottom: '12px',
+    paddingRight: '44px',
+    paddingTop: '8px',          // Zmniejszono z 12px
+    paddingBottom: '8px',       // Zmniejszono z 12px
     fontSize: fontSizes.medium,
     color: colors.black,
-    boxSizing: 'border-box',           // Pilnuje prawidłowego wymiaru pomimo dużego paddingu z prawej
+    boxSizing: 'border-box',
 });
 
+// DOPASOWANO: Pozycja absolutna kontenera ikony oka, aby idealnie pasowała do niższego pola
 export const LoginPasswordToggleAbsolute = () => ({
     position: 'absolute',
-    right: '12px',
+    right: '8px',               // Przesunięto delikatnie bliżej krawędzi (z 12px) dla lepszego wyglądu przy mniejszej skali
     top: 0,
     bottom: 0,
     display: 'flex',
@@ -206,7 +210,7 @@ export const LoginForgotInline = () => ({
 
 export const LoginValidationContainer = () => ({
     width: '100%',
-    minHeight: '20px',
+    minHeight: '4px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -221,12 +225,13 @@ export const LoginValidationError = () => ({
     textAlign: 'center',
 });
 
+// ZMNIEJSZONO: Główny przycisk logowania/rejestracji
 export const LoginSignInButton = () => ({
     backgroundColor: colors.black,
-    paddingTop: '15px',
-    paddingBottom: '15px',
-    paddingLeft: '30px',
-    paddingRight: '30px',
+    paddingTop: '10px',        // Zmniejszono z 15px
+    paddingBottom: '10px',     // Zmniejszono z 15px
+    paddingLeft: '24px',        // Dostosowano proporcjonalnie z 30px
+    paddingRight: '24px',       // Dostosowano proporcjonalnie z 30px
     borderRadius: '8px',
     display: 'flex',
     alignItems: 'center',
@@ -244,7 +249,7 @@ export const LoginSignInButtonDisabled = () => ({
     backgroundColor: colors.darkgrey,
     cursor: 'not-allowed',
     '&:hover': {
-        backgroundColor: colors.darkgrey, // Blokuje zmianę koloru przy hover gdy disabled
+        backgroundColor: colors.darkgrey,
     },
 });
 
@@ -294,7 +299,6 @@ export const LoginFieldError = () => ({
     alignSelf: 'flex-start',
 });
 
-// Dynamiczna funkcja przyjmująca stan walidacji i zwracająca odpowiedni kolor w sx
 export const LoginPasswordRequirement = (isValid: boolean) => ({
     marginLeft: '6px',
     color: isValid ? colors.green : colors.red,
