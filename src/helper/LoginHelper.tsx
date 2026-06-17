@@ -8,6 +8,41 @@ import {
 } from '../strings/loginStrings';
 import {AuthApi} from "../api/AuthApi";
 
+// export const decodeJWT = (token: string) => {
+//     try {
+//         if (!token) return null;
+//
+//         const parts = token.split('.');
+//         if (parts.length !== 3) {
+//             throw new Error('Invalid JWT token structure');
+//         }
+//
+//         const base64Url = parts[1];
+//         // Replace URL-safe characters back to standard Base64
+//         let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+//
+//         // Add padding if missing
+//         while (base64.length % 4) {
+//             base64 += '=';
+//         }
+//
+//         // Decode base64 string to raw binary string
+//         const binaryString = atob(base64);
+//         const bytes = new Uint8Array(binaryString.length);
+//
+//         for (let i = 0; i < binaryString.length; i++) {
+//             bytes[i] = binaryString.charCodeAt(i);
+//         }
+//
+//         // Properly decode binary bytes as UTF-8 string to support special characters
+//         const decodedString = new TextDecoder().decode(bytes);
+//         return JSON.parse(decodedString);
+//     } catch (error) {
+//         console.error('Failed to decode JWT safely:', error);
+//         return null;
+//     }
+// };
+
 export const decodeJWT = (token: string) => {
     try {
         const base64Url = token.split('.')[1];
@@ -67,18 +102,28 @@ export const handleSignIn = async (
 
         // Decode the JWT to handle role routing based on your Spring Boot claims
         const decodedClaims = decodeJWT(response.token);
+        // if (decodedClaims) {
+        //     console.log(`User: ${decodedClaims.firstName} ${decodedClaims.lastName} (${decodedClaims.sub})`);
+        //     console.log("All decoded JWT Claims:", decodedClaims);
+        // }
+        if (decodedClaims) {
+            console.log(`First Name: ${decodedClaims.firstName}`);
+            console.log(`Last Name: ${decodedClaims.lastName}`);
+            console.log(`Email (Subject): ${decodedClaims.sub}`);
+            console.log("All decoded JWT Claims:", decodedClaims);
+        }
 
         if (decodedClaims && decodedClaims.roles) {
             const roles: string[] = decodedClaims.roles;
 
             if (roles.includes("ROLE_ADMIN") || roles.includes("ADMIN")) {
-                navigate("/admin/dashboard"); // Route matching your admin console path
+                navigate("/adminHome"); // Route matching your admin console path
             } else {
-                navigate("/dashboard"); // Standard client app path
+                navigate("/home");
             }
         } else {
             // Default path if claims are missing
-            navigate("/dashboard");
+            navigate("/home");
         }
 
     } catch (error: any) {

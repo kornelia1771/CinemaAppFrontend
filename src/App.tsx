@@ -6,6 +6,8 @@ import WelcomePage from "./pages/login/WelcomePage";
 import RegisterPage from "./pages/login/RegisterPage";
 import LoginPage from "./pages/login/LoginPage";
 import ConfirmEmailPage from "./pages/login/ConfirmEmailPage";
+import HomePage from "./pages/user/HomePage";
+import AdminHomePage from "./pages/admin/AdminHomePage";
 
 function App() {
     return (
@@ -21,8 +23,9 @@ function App() {
                 {/* Nowy widok logowania w React Web */}
                 <Route path="/login" element={<LoginPage />} />
 
+                <Route path="/home" element={<HomePage />} />
 
-
+                <Route path="/adminHome" element={<AdminHomePage />} />
                 {/* Poprzednia ścieżka do sprawdzania połączenia ze Spring Bootem */}
                 <Route path="/test" element={
                     <div className="App">
