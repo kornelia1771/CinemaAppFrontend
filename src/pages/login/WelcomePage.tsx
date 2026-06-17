@@ -2,17 +2,17 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography, Paper, Container } from '@mui/material';
 import { TvMinimalPlay } from 'lucide-react';
-import { colors } from '../constants/theme';
+import { colors } from '../../constants/theme';
 import {
     LoginSafeAreaContainer, LoginCenterArea, LoginFormWrapper,
     LoginInnerContent, LoginTitleRow, LoginTitleText,
     LoginDescription, LoginButtonContainer, LoginButton,
     LoginButtonText
-} from '../styles/LoginStyles';
+} from '../../styles/LoginStyles';
 import {
     WelcomeDescription, SignInButton,
     SignUpButton, HeaderDefaultTitle
-} from '../strings/loginStrings';
+} from '../../strings/loginStrings';
 
 
 export default function WelcomePage() {

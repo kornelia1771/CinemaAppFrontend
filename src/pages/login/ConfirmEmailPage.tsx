@@ -2,14 +2,14 @@ import React, { useEffect, useState, useRef } from 'react'; // Dodano useRef
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Box, Container, Paper, Typography, CircularProgress, Button, Alert } from '@mui/material';
 import { CheckCircle2, XCircle } from 'lucide-react';
-import { colors } from '../constants/theme';
-import HeaderLogin from '../components/HeaderLogin';
-import { AuthApi } from '../api/AuthApi';
+import { colors } from '../../constants/theme';
+import HeaderLogin from '../../components/HeaderLogin';
+import { AuthApi } from '../../api/AuthApi';
 import {
     LoginSafeAreaContainer, LoginCenterArea, LoginFormWrapper,
     LoginFormScroll, LoginFormScrollContent, LoginFormContainer,
     LoginTitle, LoginDescription, LoginSignInButton, LoginSignInButtonText
-} from '../styles/LoginStyles';
+} from '../../styles/LoginStyles';
 
 export default function ConfirmEmailPage() {
     const [searchParams] = useSearchParams();

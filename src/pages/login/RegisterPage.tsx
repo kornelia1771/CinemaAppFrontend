@@ -4,8 +4,8 @@ import { Box, Button, Typography, Paper, Container, TextField, IconButton, Circu
 import { Eye, EyeOff, Check, X } from 'lucide-react';
 import ReCAPTCHA from 'react-google-recaptcha';
 
-import { colors } from '../constants/theme';
-import HeaderLogin from '../components/HeaderLogin';
+import { colors } from '../../constants/theme';
+import HeaderLogin from '../../components/HeaderLogin';
 
 // External styles import
 import {
@@ -16,7 +16,7 @@ import {
     LoginPasswordToggleAbsolute, LoginValidationContainer,
     LoginSignInButton, LoginSignInButtonDisabled, LoginSignInButtonText,
     LoginFieldError, LoginPasswordRequirement, LoginPasswordRequirementRow
-} from '../styles/LoginStyles';
+} from '../../styles/LoginStyles';
 
 // Registration strings import
 import {
@@ -26,18 +26,18 @@ import {
     ConfirmPasswordPlaceholder, SignUpButton, SignUpDevUser,
     IncorrectDataFormat, PasswordsDoNotMatch, PasswordMinLength,
     PasswordUppercase, PasswordLowercase, PasswordNumber, PasswordSpecial
-} from '../strings/loginStrings';
+} from '../../strings/loginStrings';
 
 // Helpers and validation imports
-import { capitalizeFirst } from '../helper/LoginHelper';
+import { capitalizeFirst } from '../../helper/LoginHelper';
 import {
     emailRegex, nameRegex, surnameRegex, passwordRegex,
     uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex, nameOnlyRegex
-} from "../helper/SharedHeper";
+} from "../../helper/SharedHeper";
 
 // API and Captcha Key import
-import { AuthApi } from '../api/AuthApi';
-import {recaptchaKey} from "../config/ReCaptchaKey";
+import { AuthApi } from '../../api/AuthApi';
+import {recaptchaKey} from "../../config/ReCaptchaKey";
 
 export default function RegisterPage() {
     const navigate = useNavigate();

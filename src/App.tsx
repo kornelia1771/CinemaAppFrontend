@@ -2,10 +2,10 @@ import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ApiTest from "./api/ApiTest";
-import WelcomePage from "./login/WelcomePage";
-import RegisterPage from "./login/RegisterPage";
-import LoginPage from "./login/LoginPage";
-import ConfirmEmailPage from "./login/ConfirmEmailPage";
+import WelcomePage from "./pages/login/WelcomePage";
+import RegisterPage from "./pages/login/RegisterPage";
+import LoginPage from "./pages/login/LoginPage";
+import ConfirmEmailPage from "./pages/login/ConfirmEmailPage";
 
 function App() {
     return (

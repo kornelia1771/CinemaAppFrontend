@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography, Paper, Container, TextField, IconButton, CircularProgress, Snackbar, Alert } from '@mui/material';
 import { Eye, EyeOff } from 'lucide-react';
-import { colors } from '../constants/theme';
-import HeaderLogin from "../components/HeaderLogin";
+import { colors } from '../../constants/theme';
+import HeaderLogin from "../../components/HeaderLogin";
 
 // External styling configurations
 import {
@@ -15,7 +15,7 @@ import {
     LoginValidationContainer, LoginValidationError, LoginSignInButton,
     LoginSignInButtonDisabled, LoginSignInButtonText, LoginDividerContainer,
     LoginDividerLine, LoginDividerText, LoginDevButtonsCol, LoginTitle
-} from '../styles/LoginStyles';
+} from '../../styles/LoginStyles';
 
 // String configurations
 import {
@@ -24,11 +24,11 @@ import {
     PasswordPlaceholder, ForgotPasswordLink, ValidationError,
     SignInButton, SignInDevUser, SignInDevAdmin,
     DevModeDivider, ShowPasswordLabel, HidePasswordLabel
-} from '../strings/loginStrings';
+} from '../../strings/loginStrings';
 
 // Helpers and validation configuration imports
-import { handleSignIn, handleAdminSignIn, handleDevUserSignIn } from '../helper/LoginHelper';
-import { emailRegex } from "../helper/SharedHeper";
+import { handleSignIn, handleAdminSignIn, handleDevUserSignIn } from '../../helper/LoginHelper';
+import { emailRegex } from "../../helper/SharedHeper";
 
 export default function LoginPage() {
     const navigate = useNavigate();
