@@ -9,9 +9,17 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-    success: boolean;
     message: string;
-    userId?: number;
+}
+
+export interface LoginRequest {
+    email: string;
+    password: string;
+}
+
+// Added for Backend Login integration
+export interface LoginResponse {
+    token: string;
 }
 
 export const AuthApi = {
@@ -46,5 +54,24 @@ export const AuthApi = {
             throw new Error(data.message || 'Failed to verify email address.');
         }
         return data as RegisterResponse;
+    },
+
+    login: async (request: LoginRequest): Promise<LoginResponse> => {
+        const response = await fetch(`${BASE_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(request),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            // Your Spring Boot catch block returns BadRequest with exception message mapped to the token property
+            throw new Error(data.token || 'An unexpected error occurred during sign in.');
+        }
+
+        return data as LoginResponse;
     }
 };

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Typography, Paper, Container, TextField, IconButton, CircularProgress } from '@mui/material';
-import {Eye, EyeOff} from 'lucide-react';
-import Header from '../components/Header';
+import { Box, Button, Typography, Paper, Container, TextField, IconButton, CircularProgress, Snackbar, Alert } from '@mui/material';
+import { Eye, EyeOff } from 'lucide-react';
 import { colors } from '../constants/theme';
+import HeaderLogin from "../components/HeaderLogin";
 
-// Import zewnętrznych stylów (dokładnie tak jak w WelcomePage)
+// External styling configurations
 import {
     LoginSafeAreaContainer, LoginCenterArea, LoginFormWrapper,
     LoginFormScroll, LoginFormScrollContent,
@@ -14,23 +14,21 @@ import {
     LoginPasswordInputWrapper, LoginPasswordInputField, LoginPasswordToggleAbsolute,
     LoginValidationContainer, LoginValidationError, LoginSignInButton,
     LoginSignInButtonDisabled, LoginSignInButtonText, LoginDividerContainer,
-    LoginDividerLine, LoginDividerText, LoginDevButtonsCol, LoginTitleRow, LoginTitleText, LoginTitle
+    LoginDividerLine, LoginDividerText, LoginDevButtonsCol, LoginTitle
 } from '../styles/LoginStyles';
 
-// Import stringów
+// String configurations
 import {
     LoginTitle as LoginTitleString, LoginDescription as LoginDescriptionText,
     EmailLabel, EmailPlaceholder, PasswordLabel,
     PasswordPlaceholder, ForgotPasswordLink, ValidationError,
     SignInButton, SignInDevUser, SignInDevAdmin,
-    DevModeDivider, ShowPasswordLabel, HidePasswordLabel, HeaderDefaultTitle
+    DevModeDivider, ShowPasswordLabel, HidePasswordLabel
 } from '../strings/loginStrings';
 
-// Importy helperów
+// Helpers and validation configuration imports
 import { handleSignIn, handleAdminSignIn, handleDevUserSignIn } from '../helper/LoginHelper';
 import { emailRegex } from "../helper/SharedHeper";
-import HeaderLogin from "../components/HeaderLogin";
-
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -40,18 +38,22 @@ export default function LoginPage() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [showValidationError, setShowValidationError] = useState(false);
 
+    // Added: State to catch and show messages thrown from your Spring Boot controller
+    const [apiError, setApiError] = useState<string | null>(null);
+
     const isFormValid = emailRegex.test(email) && password.length >= 8;
 
-    return (
-        // Struktura kontenerów zbieżna z WelcomePage, dodany Header na górze
-        <Box sx={{ ...LoginSafeAreaContainer(), flexDirection: 'column' }}>
-            {/*<Header />*/}
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        handleSignIn(email, password, isFormValid, setLoading, setShowValidationError, setApiError, navigate);
+    };
 
+    return (
+        <Box sx={{ ...LoginSafeAreaContainer(), flexDirection: 'column' }}>
             <Container maxWidth={false} disableGutters sx={LoginCenterArea()}>
                 <Paper elevation={3} sx={{ ...LoginFormWrapper(), marginTop: '8px' }}>
-
-                    {/* Zastępujemy ScrollView kontenerem Box z właściwościami przewijania ze stylów */}
                     <Box sx={{ ...LoginFormScroll(), ...LoginFormScrollContent(), overflowY: 'auto' }}>
+
                         <HeaderLogin />
 
                         <Typography variant="h5" component="h2" sx={LoginTitle()}>
@@ -62,23 +64,27 @@ export default function LoginPage() {
                             {LoginDescriptionText}
                         </Typography>
 
-                        <Box component="form" noValidate sx={LoginFormContainer()}>
+                        <Box component="form" noValidate onSubmit={handleSubmit} sx={LoginFormContainer()}>
 
-                            {/* Pole Email */}
+                            {/* Email Input Field */}
                             <Typography sx={LoginInputLabel()}>{EmailLabel}</Typography>
                             <TextField
                                 fullWidth
                                 variant="standard"
+                                type="email"
                                 placeholder={EmailPlaceholder}
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    setApiError(null);
+                                }}
                                 disabled={loading}
-                                inputProps={{ maxLength: 50 }} // POPRAWIONE: Zmiana ze slotProps na kompatybilne inputProps
-                                InputProps={{ disableUnderline: true }} // Usuwa domyślną kreskę MUI
+                                inputProps={{ maxLength: 50 }}
+                                InputProps={{ disableUnderline: true }}
                                 sx={LoginInput()}
                             />
 
-                            {/* Wiersz etykiety hasła z linkiem */}
+                            {/* Password Label Row with Forgot Navigation option */}
                             <Box sx={LoginLabelRow()}>
                                 <Typography sx={LoginInputLabel()}>{PasswordLabel}</Typography>
                                 <Box
@@ -90,7 +96,7 @@ export default function LoginPage() {
                                 </Box>
                             </Box>
 
-                            {/* Pole Hasła z ikoną oka */}
+                            {/* Password Input Field with integrated look/hide eye option */}
                             <Box sx={{ ...LoginPasswordInputWrapper(), display: 'flex', alignItems: 'center' }}>
                                 <TextField
                                     fullWidth
@@ -101,9 +107,10 @@ export default function LoginPage() {
                                     onChange={(e) => {
                                         setPassword(e.target.value);
                                         setShowValidationError(false);
+                                        setApiError(null);
                                     }}
                                     disabled={loading}
-                                    inputProps={{ maxLength: 40 }} // POPRAWIONE: Zmiana ze slotProps na kompatybilne inputProps
+                                    inputProps={{ maxLength: 40 }}
                                     InputProps={{ disableUnderline: true }}
                                     sx={LoginPasswordInputField()}
                                 />
@@ -120,19 +127,19 @@ export default function LoginPage() {
                                 </IconButton>
                             </Box>
 
-                            {/* Kontener błędu walidacji */}
+                            {/* Front-End Validation Error block */}
                             <Box sx={LoginValidationContainer()}>
                                 {(!isFormValid && (email.length > 0 || password.length > 0) || showValidationError) ? (
                                     <Typography sx={LoginValidationError()}>{ValidationError}</Typography>
                                 ) : null}
                             </Box>
 
-                            {/* Przycisk Zaloguj (Główny) */}
+                            {/* Submit Sign In Button */}
                             <Button
+                                type="submit"
                                 variant="contained"
                                 fullWidth
                                 disabled={loading || !isFormValid}
-                                onClick={() => handleSignIn(email, password, isFormValid, setLoading, setShowValidationError, navigate)}
                                 sx={{
                                     ...LoginSignInButton(),
                                     ...LoginSignInButtonText(),
@@ -147,20 +154,21 @@ export default function LoginPage() {
                                 )}
                             </Button>
 
-                            {/* Divider dla sekcji deweloperskiej */}
+                            {/* Developer Layout Segment */}
                             <Box sx={LoginDividerContainer()}>
                                 <Box sx={LoginDividerLine()} />
                                 <Typography sx={LoginDividerText()}>{DevModeDivider}</Typography>
                                 <Box sx={LoginDividerLine()} />
                             </Box>
 
-                            {/* Przyciski deweloperskie */}
+                            {/* Developer Fast Login Quick Access Section */}
                             <Box sx={LoginDevButtonsCol()}>
                                 <Button
+                                    type="button"
                                     variant="contained"
                                     fullWidth
                                     disabled={loading}
-                                    onClick={() => handleDevUserSignIn(setLoading, navigate)}
+                                    onClick={() => handleDevUserSignIn(setLoading, setApiError, navigate)}
                                     sx={{
                                         ...LoginSignInButton(),
                                         ...LoginSignInButtonText(),
@@ -170,14 +178,15 @@ export default function LoginPage() {
                                         '&:hover': { backgroundColor: colors.borderGrey }
                                     }}
                                 >
-                                    {loading ? <CircularProgress size={24} /> : SignInDevUser}
+                                    {loading ? <CircularProgress size={24} sx={{ color: colors.white }} /> : SignInDevUser}
                                 </Button>
 
                                 <Button
+                                    type="button"
                                     variant="contained"
                                     fullWidth
                                     disabled={loading}
-                                    onClick={() => handleAdminSignIn(setLoading, navigate)}
+                                    onClick={() => handleAdminSignIn(setLoading, setApiError, navigate)}
                                     sx={{
                                         ...LoginSignInButton(),
                                         ...LoginSignInButtonText(),
@@ -188,15 +197,32 @@ export default function LoginPage() {
                                         '&:hover': { backgroundColor: colors.borderGrey }
                                     }}
                                 >
-                                    {SignInDevAdmin}
+                                    {loading ? <CircularProgress size={24} sx={{ color: colors.white }} /> : SignInDevAdmin}
                                 </Button>
                             </Box>
 
                         </Box>
                     </Box>
-
                 </Paper>
             </Container>
+
+            {/* Notification Toast for showing backend-generated issues at the bottom left */}
+            <Snackbar
+                open={apiError !== null}
+                autoHideDuration={6000}
+                onClose={() => setApiError(null)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert
+                    onClose={() => setApiError(null)}
+                    severity="error"
+                    sx={{ width: '100%', borderRadius: '8px', fontWeight: '500' }}
+                    elevation={6}
+                    variant="filled"
+                >
+                    {apiError}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }
