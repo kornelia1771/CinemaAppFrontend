@@ -8,6 +8,7 @@ import LoginPage from "./pages/login/LoginPage";
 import ConfirmEmailPage from "./pages/login/ConfirmEmailPage";
 import HomePage from "./pages/user/HomePage";
 import AdminHomePage from "./pages/admin/AdminHomePage";
+import ProfilePage from "./pages/user/ProfilePage";
 
 function App() {
     return (
@@ -24,6 +25,8 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
 
                 <Route path="/home" element={<HomePage />} />
+
+                <Route path="/profile" element={<ProfilePage />} />
 
                 <Route path="/adminHome" element={<AdminHomePage />} />
                 {/* Poprzednia ścieżka do sprawdzania połączenia ze Spring Bootem */}

@@ -41,8 +41,20 @@ export default function HeaderLogin() {
                 <ArrowLeft size={20} />
             </IconButton>
 
-            {/* Centered Application Logo and Title */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {/* Centered Application Logo and Title - Kliknięcie przekierowuje do / */}
+            <Box
+                onClick={() => navigate('/')}
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: 'pointer', // Pokazuje rączkę po najechaniu myszką
+                    userSelect: 'none', // Blokuje zaznaczanie tekstu przy szybkim klikaniu
+                    '&:hover': {
+                        opacity: 0.8 // Delikatny efekt wizualny po najechaniu
+                    }
+                }}
+            >
                 <TvMinimalPlay size={22} color={colors.black} style={{ display: 'block' }} />
                 <Typography
                     variant="h6"
