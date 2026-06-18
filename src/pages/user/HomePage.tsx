@@ -57,11 +57,11 @@ export default function HomePage() {
 
             <Container maxWidth="md" sx={{ mt: 6, mb: 4, flexGrow: 1 }}>
                 <Paper elevation={3} sx={{ p: 4, borderRadius: '12px', textAlign: 'center' }}>
-                    <Typography variant="h4" component="h1" sx={{ fontWeight: '700', marginBottom: '8px', color: colors.black }}>
-                        Welcome back, {userFirstName || 'User'}!
+                    <Typography variant="h5" component="h1" sx={{ fontWeight: '700', marginBottom: '8px', color: colors.black }}>
+                        Welcome in CinemaApp!
                     </Typography>
                     <Typography variant="body1" sx={{ color: colors.darkgrey, marginBottom: '32px' }}>
-                        You have successfully logged into your application.
+                        Choose your movie.
                     </Typography>
 
                     {/* Stan ładowania danych */}
@@ -160,23 +160,23 @@ export default function HomePage() {
                                         </Typography>
 
                                         {/* Czas trwania filmu pobrany ze Spring Boota */}
-                                        <Typography variant="caption" sx={{ color: colors.darkgrey, mb: 1, px: '2px' }}>
-                                            Duration: {movie.duration} min
-                                        </Typography>
+                                        {/*<Typography variant="caption" sx={{ color: colors.darkgrey, mb: 1, px: '2px' }}>*/}
+                                        {/*    Duration: {movie.duration} min*/}
+                                        {/*</Typography>*/}
 
                                         {/* Przykładowa cena (ponieważ encja filmu nie zawiera ceny w bazie) */}
-                                        <Typography
-                                            variant="body2"
-                                            sx={{
-                                                fontWeight: '600',
-                                                color: colors.darkgrey,
-                                                textAlign: 'right',
-                                                marginBottom: '14px',
-                                                paddingRight: '2px'
-                                            }}
-                                        >
-                                            25.00 USD
-                                        </Typography>
+                                        {/*<Typography*/}
+                                        {/*    variant="body2"*/}
+                                        {/*    sx={{*/}
+                                        {/*        fontWeight: '600',*/}
+                                        {/*        color: colors.darkgrey,*/}
+                                        {/*        textAlign: 'right',*/}
+                                        {/*        marginBottom: '14px',*/}
+                                        {/*        paddingRight: '2px'*/}
+                                        {/*    }}*/}
+                                        {/*>*/}
+                                        {/*    /!*25.00 ZŁ*!/*/}
+                                        {/*</Typography>*/}
                                     </Box>
 
                                     <Box

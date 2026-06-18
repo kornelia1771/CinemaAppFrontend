@@ -27,7 +27,7 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { TvMinimalPlay, LogOut, Home, User, Ticket } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; // Dodano useLocation
 import { colors } from '../constants/theme';
 import { HeaderContainer, HeaderLogoRow, HeaderLogoText } from '../styles/ComponentsStyles';
 import { HeaderDefaultTitle } from '../strings/loginStrings';
@@ -39,6 +39,27 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ title = HeaderDefaultTitle, onSignOut }) => {
     const navigate = useNavigate();
+    const location = useLocation(); // Pobranie aktualnej ścieżki (np. '/home')
+
+    // Funkcja pomocnicza zwracająca style dla przycisku w zależności od tego, czy jest aktywny
+    const getButtonStyles = (path: string) => {
+        const isActive = location.pathname === path;
+
+        return {
+            textTransform: 'none' as const,
+            fontWeight: '600',
+            borderRadius: '8px', // Lekko zaokrąglone rogi dla lepszego wyglądu
+            padding: '6px 16px',
+            backgroundColor: isActive ? colors.black : 'transparent',
+            color: isActive ? colors.white : colors.black,
+            '&:hover': {
+                backgroundColor: isActive ? '#333333' : 'rgba(0,0,0,0.04)',
+                color: isActive ? colors.white : colors.black,
+            },
+            // Zapewnienie płynnego przejścia kolorów
+            transition: 'all 0.2s ease-in-out',
+        };
+    };
 
     return (
         <Box
@@ -61,37 +82,23 @@ const Header: React.FC<HeaderProps> = ({ title = HeaderDefaultTitle, onSignOut }
             </Box>
 
             {/* Prawa strona: Menu nawigacyjne z ikonami (ujednolicony styl) */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {/* Przycisk Home */}
                 <Button
                     variant="text"
                     startIcon={<Home size={18} />}
                     onClick={() => navigate('/home')}
-                    sx={{
-                        textTransform: 'none',
-                        color: colors.black,
-                        fontWeight: '600',
-                        '&:hover': {
-                            backgroundColor: 'rgba(0,0,0,0.04)'
-                        }
-                    }}
+                    sx={getButtonStyles('/home')}
                 >
                     Home
                 </Button>
 
-                {/* NOWY: Przycisk Tickets */}
+                {/* Przycisk Tickets */}
                 <Button
                     variant="text"
                     startIcon={<Ticket size={18} />}
                     onClick={() => navigate('/tickets')}
-                    sx={{
-                        textTransform: 'none',
-                        color: colors.black,
-                        fontWeight: '600',
-                        '&:hover': {
-                            backgroundColor: 'rgba(0,0,0,0.04)'
-                        }
-                    }}
+                    sx={getButtonStyles('/tickets')}
                 >
                     Tickets
                 </Button>
@@ -101,19 +108,12 @@ const Header: React.FC<HeaderProps> = ({ title = HeaderDefaultTitle, onSignOut }
                     variant="text"
                     startIcon={<User size={18} />}
                     onClick={() => navigate('/profile')}
-                    sx={{
-                        textTransform: 'none',
-                        color: colors.black,
-                        fontWeight: '600',
-                        '&:hover': {
-                            backgroundColor: 'rgba(0,0,0,0.04)'
-                        }
-                    }}
+                    sx={getButtonStyles('/profile')}
                 >
                     Profile
                 </Button>
 
-                {/* Przycisk Sign Out (zmieniony na variant="text", spójny styl) */}
+                {/* Przycisk Sign Out */}
                 {onSignOut && (
                     <Button
                         variant="text"
@@ -123,6 +123,8 @@ const Header: React.FC<HeaderProps> = ({ title = HeaderDefaultTitle, onSignOut }
                             textTransform: 'none',
                             color: colors.black,
                             fontWeight: '600',
+                            borderRadius: '8px',
+                            padding: '6px 16px',
                             '&:hover': {
                                 backgroundColor: 'rgba(0,0,0,0.04)'
                             }
