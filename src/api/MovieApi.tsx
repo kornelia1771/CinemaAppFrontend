@@ -3,7 +3,6 @@ import {BASE_URL} from "./ApiHttp";
 export interface MovieResponse {
     id: number;
     title: string;
-    description: string;
     duration: number;
     imageUrl: string | null;
 }

@@ -9,6 +9,7 @@ import ConfirmEmailPage from "./pages/login/ConfirmEmailPage";
 import HomePage from "./pages/user/HomePage";
 import AdminHomePage from "./pages/admin/AdminHomePage";
 import ProfilePage from "./pages/user/ProfilePage";
+import MovieDetailsPage from "./pages/user/MovieDetailsPage";
 
 function App() {
     return (
@@ -25,6 +26,8 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
 
                 <Route path="/home" element={<HomePage />} />
+                {/*<Route path="/movie" element={<MovieDetailsPage />} />*/}
+                <Route path="/movie/:id" element={<MovieDetailsPage />} />
 
                 <Route path="/profile" element={<ProfilePage />} />
 

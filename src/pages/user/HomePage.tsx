@@ -91,7 +91,7 @@ export default function HomePage() {
                             {movies.map((movie) => (
                                 <Box
                                     key={movie.id}
-                                    onClick={() => navigate(`/booking/${movie.id}`)}
+                                    onClick={() => navigate(`/movie/${movie.id}`)}
                                     sx={{
                                         display: 'flex',
                                         flexDirection: 'column',
