@@ -151,8 +151,15 @@ export default function MovieDetailsPage() {
             <Header title="CinemaApp" onSignOut={handleSignOut} />
 
             <Container maxWidth="md" sx={{ mt: 6, mb: 4, flexGrow: 1 }}>
-                <Paper elevation={3} sx={{ p: 4, borderRadius: '12px', position: 'relative' }}>
-
+                {/*<Paper elevation={3} sx={{ p: 4, borderRadius: '12px', position: 'relative' }}>*/}
+                <Paper
+                    elevation={3}
+                    sx={{
+                        p: 4,
+                        borderRadius: '12px',
+                        position: 'relative'
+                    }}
+                >
                     <IconButton
                         onClick={() => navigate(-1)}
                         sx={{
