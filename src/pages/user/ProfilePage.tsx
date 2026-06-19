@@ -12,7 +12,7 @@ import { getUserData, updateUserData } from '../../api/UserApi';
 import { capitalizeFirst } from '../../helper/LoginHelper';
 import { nameRegex, surnameRegex, nameOnlyRegex } from "../../helper/SharedHeper";
 import { IncorrectDataFormat } from '../../strings/loginStrings';
-import { LoginFieldError, LoginSignInButton } from '../../styles/LoginStyles'; // Przywrócono LoginSignInButton
+import { LoginFieldError } from '../../styles/LoginStyles';
 
 export default function ProfilePage() {
     const navigate = useNavigate();
@@ -24,6 +24,7 @@ export default function ProfilePage() {
     const [touchedName, setTouchedName] = useState(false);
     const [touchedSurname, setTouchedSurname] = useState(false);
 
+    // Pobieranie danych z backendu
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -53,10 +54,7 @@ export default function ProfilePage() {
 
     const handleCloseModal = () => setIsModalOpen(false);
 
-    const isFormValid = (
-        nameRegex.test(editForm.firstName) &&
-        surnameRegex.test(editForm.lastName)
-    );
+    const isFormValid = nameRegex.test(editForm.firstName) && surnameRegex.test(editForm.lastName);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -67,7 +65,7 @@ export default function ProfilePage() {
             setUser((prev) => ({ ...prev, firstName: editForm.firstName, lastName: editForm.lastName }));
             setIsModalOpen(false);
         } catch (error) {
-            console.error("Błąd aktualizacji", error);
+            console.error("Błąd zapisu", error);
             alert("Nie udało się zaktualizować danych.");
         }
     };
@@ -86,18 +84,14 @@ export default function ProfilePage() {
 
             <Container maxWidth="md" sx={{ mt: 6, mb: 4, flexGrow: 1 }}>
                 <Paper elevation={3} sx={{ p: 4, borderRadius: '12px' }}>
-                    {/* Reszta UI z Twoimi oryginalnymi stylami */}
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
                         <Box sx={{ backgroundColor: '#eeeeee', borderRadius: '50%', p: 2, display: 'inline-flex', marginBottom: '16px' }}>
                             <User size={40} color={colors.black} />
                         </Box>
-                        <Typography variant="h5" component="h1" sx={{ fontWeight: '700', color: colors.black }}>
-                            Hello {user.firstName}!
-                        </Typography>
+                        <Typography variant="h5" sx={{ fontWeight: '700', color: colors.black }}>Hello {user.firstName}!</Typography>
                     </Box>
 
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '100%', textAlign: 'left' }}>
-                        {/* Pola danych zachowujące oryginalny layout */}
                         <Box>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', mb: '2px' }}>
                                 <User size={14} color={colors.darkgrey} />
@@ -122,42 +116,85 @@ export default function ProfilePage() {
                             <Typography variant="body1" sx={{ fontWeight: '600', color: colors.black, pl: '20px' }}>{user.email}</Typography>
                         </Box>
 
-                        {/* Przywrócono styl przycisku Edit Data */}
-                        <Button
-                            variant="contained"
-                            fullWidth
-                            startIcon={<Pencil size={16} />}
-                            onClick={handleOpenModal}
-                            sx={{ ...LoginSignInButton(), mt: 2 }} // Użycie oryginalnego stylu przycisku
-                        >
-                            Edit Data
-                        </Button>
+                        <Box sx={{ mt: 2, width: '100%' }}>
+                            <Button
+                                onClick={handleOpenModal}
+                                sx={{
+                                    width: '100%',
+                                    backgroundColor: colors.black,
+                                    color: colors.white,
+                                    padding: '10px 24px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    fontSize: fontSizes?.medium || '1rem',
+                                    fontWeight: '600',
+                                    '&:hover': { backgroundColor: colors.darkgrey }
+                                }}
+                            >
+                                Edit Data
+                            </Button>
+                        </Box>
                     </Box>
                 </Paper>
             </Container>
 
-            {/* Dialog z oryginalnymi stylami */}
+            {/* Dialog z Twoimi oryginalnymi stylami */}
             <Dialog open={isModalOpen} onClose={handleCloseModal} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: '12px', p: 1 } }}>
                 <form onSubmit={handleSave} noValidate>
                     <DialogTitle sx={{ fontWeight: '700', color: colors.black }}>Edit Profile Data</DialogTitle>
                     <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important' }}>
-                        <TextField label="First Name" fullWidth required value={editForm.firstName} onChange={(e) => {
+                        <TextField label="First Name" fullWidth value={editForm.firstName} onChange={(e) => {
                             const sanitized = e.target.value.replace(nameOnlyRegex, '');
                             setEditForm({ ...editForm, firstName: capitalizeFirst(sanitized) });
                             setTouchedName(true);
                         }} />
-                        {touchedName && !nameRegex.test(editForm.firstName) && <Typography sx={LoginFieldError()}>{IncorrectDataFormat}</Typography>}
-
-                        <TextField label="Last Name" fullWidth required value={editForm.lastName} onChange={(e) => {
+                        <TextField label="Last Name" fullWidth value={editForm.lastName} onChange={(e) => {
                             const sanitized = e.target.value.replace(nameOnlyRegex, '');
                             setEditForm({ ...editForm, lastName: capitalizeFirst(sanitized) });
                             setTouchedSurname(true);
                         }} />
-                        {touchedSurname && !surnameRegex.test(editForm.lastName) && <Typography sx={LoginFieldError()}>{IncorrectDataFormat}</Typography>}
                     </DialogContent>
-                    <DialogActions sx={{ px: 3, pb: 2 }}>
-                        <Button onClick={handleCloseModal} sx={{ color: colors.black }}>Cancel</Button>
-                        <Button type="submit" variant="contained" disabled={!isFormValid} sx={LoginSignInButton()}>Save</Button>
+                    <DialogActions sx={{ px: 3, pb: 2, mt: 1 }}>
+                        <Box sx={{ display: 'flex', width: '100%', gap: '12px' }}>
+                            <Button onClick={handleCloseModal} sx={{
+                                flex: 1,
+                                paddingTop: '10px',
+                                paddingBottom: '10px',
+                                borderRadius: '8px',
+                                textTransform: 'none',
+                                borderColor: colors.black,
+                                color: colors.black,
+                                fontSize: fontSizes?.medium || '1rem',
+                                fontWeight: '600',
+                                '&:hover': {
+                                borderColor: colors.darkgrey,
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                            }
+                            }} variant="outlined">Cancel</Button>
+                            <Button type="submit" disabled={!isFormValid} sx={{
+                                flex: 1,
+                                backgroundColor: colors.black,
+                                color: colors.white,
+                                paddingTop: '10px',
+                                paddingBottom: '10px',
+                                borderRadius: '8px',
+                                textTransform: 'none',
+                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.18)',
+                                fontSize: fontSizes?.medium || '1rem',
+                                fontWeight: '600',
+                                '&:disabled': {
+                                    backgroundColor: colors.darkgrey,
+                                    color: 'rgba(255, 255, 255, 0.7)',
+                                    cursor: 'not-allowed',
+                                    opacity: 0.6,
+                                    boxShadow: 'none'
+                                },
+                                '&:hover': {
+                                    backgroundColor: colors.darkgrey,
+                                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.18)'
+                                }
+                            }} variant="contained">Save</Button>
+                        </Box>
                     </DialogActions>
                 </form>
             </Dialog>
