@@ -13,6 +13,7 @@ export interface ScreeningResponse {
     hallName: string;
     totalSeats: number;
     freeSeats: number;
+    takenSeats: number;
     screeningTime: string; // LocalDateTime przychodzi jako ISO String (np. "2026-06-18T18:00:00")
     ticketPrice: number;
 }

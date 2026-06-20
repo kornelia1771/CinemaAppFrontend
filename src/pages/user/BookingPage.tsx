@@ -44,8 +44,8 @@ export default function BookingPage() {
     if (error || !movieData || !currentScreening) return <Typography color="error">{error}</Typography>;
 
     const ticketPrice = currentScreening.ticketPrice ? Number(currentScreening.ticketPrice) : 0;
-    const totalSeats = currentScreening.totalSeats || 50;
-    const freeSeats = currentScreening.freeSeats || 20;
+    const totalSeats = currentScreening.totalSeats || 100;
+    const freeSeats = currentScreening.freeSeats || 101;
 
     const maxPeople = Math.max(1, freeSeats);
     const totalCost = numberOfPeople * ticketPrice;
