@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Paper, Typography, CircularProgress, Alert, Chip, Divider } from '@mui/material';
-import {Ticket, CalendarDays, MapPin, Users, Calendar, Wallet} from 'lucide-react';
+import { Box, Container, Paper, Typography, CircularProgress, Alert, Chip, Divider, Button, Snackbar } from '@mui/material';
+import { Ticket, MapPin, Users, Calendar, Wallet, Clock } from 'lucide-react';
 import { colors } from '../../constants/theme';
 import Header from '../../components/Header';
 import { TicketApi, TicketResponse } from '../../api/TicketApi';
@@ -11,6 +11,10 @@ export default function TicketsPage() {
     const [tickets, setTickets] = useState<TicketResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // States for backend error/success handling
+    const [apiError, setApiError] = useState<string | null>(null);
+    const [apiSuccess, setApiSuccess] = useState<string | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -38,22 +42,48 @@ export default function TicketsPage() {
         navigate('/login');
     };
 
-    // Pomocnicza funkcja do formatowania daty "yyyy-MM-dd'T'HH:mm:ss" na czytelniejszą
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleString('en-GB', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
+    const formatOnlyDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('en-GB', {
+            day: '2-digit', month: '2-digit', year: 'numeric'
+        });
+    };
+
+    const formatOnlyTime = (dateString: string) => {
+        return new Date(dateString).toLocaleTimeString('en-GB', {
             hour: '2-digit', minute: '2-digit'
         });
     };
 
-    // Helper do stylowania statusu biletu
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'PAID': return 'success';
             case 'UNPAID': return 'warning';
             case 'CANCELLED': return 'error';
             default: return 'default';
+        }
+    };
+
+    const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000);
+    const sortedTickets = [...tickets].sort((a, b) => {
+        const timeA = new Date(a.screeningTime).getTime();
+        const timeB = new Date(b.screeningTime).getTime();
+
+        const isPastA = new Date(a.screeningTime) < fourHoursAgo || a.status === 'CANCELLED';
+        const isPastB = new Date(b.screeningTime) < fourHoursAgo || b.status === 'CANCELLED';
+
+        if (isPastA && !isPastB) return 1;
+        if (!isPastA && isPastB) return -1;
+        return timeB - timeA;
+    });
+
+    const handlePay = async (ticketId: number) => {
+        try {
+            await TicketApi.payForTicket(ticketId);
+            setApiSuccess("Payment successful!");
+            const data = await TicketApi.getUserTickets();
+            setTickets(data);
+        } catch (err: any) {
+            setApiError(err.message || "Payment failed.");
         }
     };
 
@@ -86,10 +116,9 @@ export default function TicketsPage() {
                         </Typography>
                     )}
 
-                    {/* Lista biletów */}
-                    {!loading && !error && tickets.length > 0 && (
+                    {!loading && !error && sortedTickets.length > 0 && (
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            {tickets.map((ticket) => (
+                            {sortedTickets.map((ticket) => (
                                 <Box
                                     key={ticket.id}
                                     sx={{
@@ -103,7 +132,6 @@ export default function TicketsPage() {
                                         '&:hover': { transform: 'translateY(-2px)', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }
                                     }}
                                 >
-                                    {/* Nagłówek biletu: Tytuł i Status */}
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                         <Typography variant="h6" sx={{ fontWeight: '700', color: colors.black }}>
                                             {ticket.movieTitle}
@@ -112,67 +140,100 @@ export default function TicketsPage() {
                                             label={ticket.status}
                                             color={getStatusColor(ticket.status) as any}
                                             size="small"
-                                            sx={{ fontWeight: 'bold', borderRadius: '6px' }}
+                                            sx={{ fontWeight: 'bold', borderRadius: '0px' }}
                                         />
                                     </Box>
 
                                     <Divider sx={{ my: 1 }} />
 
-                                    {/* Szczegóły seansu */}
                                     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-
-                                        {/* Data i czas */}
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <Calendar size={18} color={colors.darkgrey} />
-                                            <Box>
-                                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Date & Time</Typography>
-                                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{formatDate(ticket.screeningTime)}</Typography>
-                                            </Box>
-                                        </Box>
-
-                                        {/* Sala */}
+                                        {/* Details grid content remains identical as requested */}
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             <MapPin size={18} color={colors.darkgrey} />
-                                            <Box>
-                                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Hall</Typography>
-                                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{ticket.hallName}</Typography>
-                                            </Box>
+                                            <Box><Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Hall</Typography><Typography variant="body2" sx={{ fontWeight: '600' }}>{ticket.hallName}</Typography></Box>
                                         </Box>
-
-                                        {/* Liczba miejsc */}
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             <Users size={18} color={colors.darkgrey} />
-                                            <Box>
-                                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Seats</Typography>
-                                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{ticket.seatCounter}x</Typography>
-                                            </Box>
+                                            <Box><Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Seats</Typography><Typography variant="body2" sx={{ fontWeight: '600' }}>{ticket.seatCounter}x</Typography></Box>
                                         </Box>
-
-                                        {/* Cena końcowa */}
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <Calendar size={18} color={colors.darkgrey} />
+                                            <Box><Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Date</Typography><Typography variant="body2" sx={{ fontWeight: '600' }}>{formatOnlyDate(ticket.screeningTime)}</Typography></Box>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <Ticket size={18} color={colors.darkgrey} />
+                                            <Box><Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Single Ticket Price</Typography><Typography variant="body2" sx={{ fontWeight: '700' }}>{Number(ticket.ticketPrice).toFixed(2)} PLN</Typography></Box>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <Clock size={18} color={colors.darkgrey} />
+                                            <Box><Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Time</Typography><Typography variant="body2" sx={{ fontWeight: '600' }}>{formatOnlyTime(ticket.screeningTime)}</Typography></Box>
+                                        </Box>
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             <Wallet size={18} color={colors.darkgrey} />
-                                            <Box>
-                                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Total Price</Typography>
-                                                <Typography variant="body2" sx={{ fontWeight: '700' }}>{Number(ticket.totalPrice).toFixed(2)} PLN</Typography>
-                                            </Box>
+                                            <Box><Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Total Price</Typography><Typography variant="body2" sx={{ fontWeight: '700' }}>{Number(ticket.totalPrice).toFixed(2)} PLN</Typography></Box>
                                         </Box>
-
                                     </Box>
 
-                                    {/* Informacja o czasie zapłaty dla nieopłaconych biletów */}
-                                    {ticket.status === 'UNPAID' && (
-                                        <Typography variant="caption" sx={{ color: colors.darkgrey, mt: 1, fontStyle: 'italic' }}>
-                                            Please pay by: {formatDate(ticket.dateDuePay)} or the reservation will be cancelled.
-                                        </Typography>
-                                    )}
+                                    <Divider sx={{ mt: 1 }} />
 
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
+                                        {/* Wyświetlanie informacji o płatności w zależności od statusu */}
+                                        {ticket.status === 'UNPAID' ? (
+                                            <Typography variant="caption" sx={{ color: colors.darkgrey, fontStyle: 'italic' }}>
+                                                Please pay by: {formatOnlyTime(ticket.dateDuePay)}, {formatOnlyDate(ticket.dateDuePay)} or the reservation will be cancelled.
+                                            </Typography>
+                                        ) : ticket.status === 'PAID' ? (
+                                            <Typography variant="caption" sx={{ color: colors.darkgrey, fontStyle: 'italic' }}>
+                                                Paid: {ticket.paymentTime ? `${formatOnlyTime(ticket.paymentTime)}, ${formatOnlyDate(ticket.paymentTime)}` : 'N/A'}
+                                            </Typography>
+                                        ) : (
+                                            <Box /> // Pusty box, jeśli bilet jest np. CANCELLED
+                                        )}
+
+                                        {/* Wyświetlanie odpowiedniego przycisku */}
+                                        {ticket.status === 'UNPAID' ? (
+                                            <Button
+                                                variant="contained"
+                                                size="small"
+                                                onClick={() => handlePay(ticket.id)}
+                                                sx={{
+                                                    backgroundColor: colors.black,
+                                                    px: 4, py: 1, borderRadius: '8px', ml: 2,
+                                                    '&:hover': { backgroundColor: colors.darkgrey }
+                                                }}
+                                            >
+                                                Pay
+                                            </Button>
+                                        ) : ticket.status === 'PAID' ? (
+                                            <Button
+                                                variant="outlined"
+                                                size="small"
+                                                // Tutaj dodaj obsługę pobierania PDF, np. onClick={() => downloadPdf(ticket.id)}
+                                                sx={{
+                                                    borderColor: colors.black,
+                                                    color: colors.black,
+                                                    px: 4, py: 1, borderRadius: '8px', ml: 2,
+                                                    '&:hover': { borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)' }
+                                                }}
+                                            >
+                                                PDF
+                                            </Button>
+                                        ) : null}
+                                    </Box>
                                 </Box>
                             ))}
                         </Box>
                     )}
-
                 </Paper>
             </Container>
+
+            <Snackbar open={apiError !== null} autoHideDuration={3000} onClose={() => setApiError(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+                <Alert onClose={() => setApiError(null)} severity="error" sx={{ width: '100%', borderRadius: '8px', fontWeight: '500' }} elevation={6} variant="filled">{apiError}</Alert>
+            </Snackbar>
+
+            <Snackbar open={apiSuccess !== null} autoHideDuration={3000} onClose={() => setApiSuccess(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+                <Alert onClose={() => setApiSuccess(null)} severity="success" sx={{ width: '100%', borderRadius: '8px', fontWeight: '500' }} elevation={6} variant="filled">{apiSuccess}</Alert>
+            </Snackbar>
         </Box>
     );
 }

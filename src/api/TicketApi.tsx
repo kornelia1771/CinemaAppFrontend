@@ -41,7 +41,6 @@ export const TicketApi = {
         return data.message;
     },
 
-    // NOWA METODA: Pobieranie biletów użytkownika
     getUserTickets: async (): Promise<TicketResponse[]> => {
         const token = localStorage.getItem("token");
         const response = await fetch(`${BASE_URL}/tickets`, {
@@ -59,5 +58,24 @@ export const TicketApi = {
         }
 
         return data as TicketResponse[];
+    },
+
+    payForTicket: async (ticketId: number): Promise<any> => {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${BASE_URL}/tickets/${ticketId}/pay`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Payment failed.");
+        }
+
+        return data;
     }
 };
