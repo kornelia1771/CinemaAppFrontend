@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { Box, Container, Paper, Typography, Button, CircularProgress, IconButton } from '@mui/material';
+import { Box, Container, Paper, Typography, Button, CircularProgress, IconButton, Snackbar, Alert } from '@mui/material';
 import { ArrowLeft, Minus, Plus } from 'lucide-react';
 import { colors } from '../../constants/theme';
 import Header from '../../components/Header';
 import { MovieApi, MovieDetailsResponse, ScreeningResponse } from '../../api/MovieApi';
+import { TicketApi } from '../../api/TicketApi';
 
 export default function BookingPage() {
     const { movieId } = useParams<{ movieId: string }>();
@@ -18,30 +19,59 @@ export default function BookingPage() {
     const [movieData, setMovieData] = useState<MovieDetailsResponse | null>(null);
     const [currentScreening, setCurrentScreening] = useState<ScreeningResponse | null>(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+
+    // States for backend error/success handling
+    const [apiError, setApiError] = useState<string | null>(null);
+    const [apiSuccess, setApiSuccess] = useState<string | null>(null);
 
     const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) { navigate('/login'); return; }
-        if (!movieId || !screeningId) { setError("Data error."); setLoading(false); return; }
+        if (!movieId || !screeningId) {
+            setApiError("Data error.");
+            setLoading(false);
+            return;
+        }
 
         MovieApi.getMovieWithScreenings(movieId)
             .then((data) => {
                 setMovieData(data);
                 const screening = data.screenings.find(s => String(s.id) === String(screeningId));
                 if (screening) setCurrentScreening(screening);
-                else setError("Showtime not found.");
+                else setApiError("Showtime not found.");
                 setLoading(false);
             })
-            .catch((err) => { setError(err.message); setLoading(false); });
+            .catch((err) => { setApiError(err.message); setLoading(false); });
     }, [movieId, screeningId, navigate]);
 
     const handleSignOut = () => { localStorage.removeItem('token'); navigate('/login'); };
 
+    const handleConfirmReservation = async () => {
+        if (!movieId || !screeningId) return;
+
+        try {
+            await TicketApi.reserveTickets({
+                movieId: Number(movieId),
+                screeningId: Number(screeningId),
+                seatCounter: numberOfPeople
+            });
+
+            // Set success message and redirect after delay
+            setApiSuccess("Reservation successful!");
+            setTimeout(() => {
+                navigate('/tickets');
+            }, 2000);
+
+        } catch (err: any) {
+            // Replicate LoginPage's error handling by saving message to apiError state
+            setApiError(err.message || "Reservation failed.");
+        }
+    };
+
     if (loading) return <CircularProgress />;
-    if (error || !movieData || !currentScreening) return <Typography color="error">{error}</Typography>;
+    if (!movieData || !currentScreening) return <Typography color="error">{apiError}</Typography>;
 
     const ticketPrice = currentScreening.ticketPrice ? Number(currentScreening.ticketPrice) : 0;
     const totalSeats = currentScreening.totalSeats || 100;
@@ -57,7 +87,6 @@ export default function BookingPage() {
             <Container maxWidth="md" sx={{ mt: 6, mb: 4 }}>
                 <Paper elevation={3} sx={{ p: 4, borderRadius: '12px', textAlign: 'center', position: 'relative' }}>
 
-                    {/* Przesunięto strzałkę do góry (top: 16px) */}
                     <IconButton onClick={() => navigate(-1)} sx={{ position: 'absolute', left: 16, top: 16, color: colors.black }}>
                         <ArrowLeft size={20} />
                     </IconButton>
@@ -130,12 +159,48 @@ export default function BookingPage() {
                             backgroundColor: colors.black, px: 4, py: 1.5, borderRadius: '8px',
                             '&:hover': { backgroundColor: colors.darkgrey }
                         }}
-                        onClick={() => alert("Booked!")}
+                        onClick={handleConfirmReservation}
                     >
                         Confirm Reservation
                     </Button>
                 </Paper>
             </Container>
+
+            {/* Error Notification Toast matching LoginPage */}
+            <Snackbar
+                open={apiError !== null}
+                autoHideDuration={6000}
+                onClose={() => setApiError(null)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert
+                    onClose={() => setApiError(null)}
+                    severity="error"
+                    sx={{ width: '100%', borderRadius: '8px', fontWeight: '500' }}
+                    elevation={6}
+                    variant="filled"
+                >
+                    {apiError}
+                </Alert>
+            </Snackbar>
+
+            {/* Success Notification Toast */}
+            <Snackbar
+                open={apiSuccess !== null}
+                autoHideDuration={6000}
+                onClose={() => setApiSuccess(null)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert
+                    onClose={() => setApiSuccess(null)}
+                    severity="success"
+                    sx={{ width: '100%', borderRadius: '8px', fontWeight: '500' }}
+                    elevation={6}
+                    variant="filled"
+                >
+                    {apiSuccess}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }

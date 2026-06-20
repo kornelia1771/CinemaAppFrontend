@@ -31,7 +31,7 @@ export interface MovieDetailsResponse {
 export const MovieApi = {
     getAllMovies: async (): Promise<MovieResponse[]> => {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${BASE_URL}/cinema/movies`, {
+        const response = await fetch(`${BASE_URL}/movies`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -60,7 +60,7 @@ export const MovieApi = {
 
     getMovieWithScreenings: async (movieId: string | number): Promise<MovieDetailsResponse> => {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${BASE_URL}/cinema/movies/${movieId}`, {
+        const response = await fetch(`${BASE_URL}/movies/${movieId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
