@@ -11,6 +11,7 @@ import AdminHomePage from "./pages/admin/AdminHomePage";
 import ProfilePage from "./pages/user/ProfilePage";
 import MovieDetailsPage from "./pages/user/MovieDetailsPage";
 import BookingPage from "./pages/user/BookingPage";
+import TicketsPage from "./pages/user/TicketsPage";
 
 function App() {
     return (
@@ -30,6 +31,7 @@ function App() {
                 {/*<Route path="/movie" element={<MovieDetailsPage />} />*/}
                 <Route path="/movie/:id" element={<MovieDetailsPage />} />
                 <Route path="/booking/:movieId" element={<BookingPage />} />
+                <Route path="/tickets" element={<TicketsPage />} />
 
                 <Route path="/profile" element={<ProfilePage />} />
 

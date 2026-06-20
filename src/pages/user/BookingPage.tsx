@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { Box, Container, Paper, Typography, Button, CircularProgress, IconButton, Snackbar, Alert } from '@mui/material';
-import { ArrowLeft, Minus, Plus } from 'lucide-react';
+import { Box, Container, Paper, Typography, Button, CircularProgress, IconButton, Snackbar, Alert, Divider } from '@mui/material';
+import { ArrowLeft, Minus, Plus, MapPin, Wallet, Calendar, Clock, Users, UserCheck } from 'lucide-react';
 import { colors } from '../../constants/theme';
 import Header from '../../components/Header';
 import { MovieApi, MovieDetailsResponse, ScreeningResponse } from '../../api/MovieApi';
@@ -80,6 +80,16 @@ export default function BookingPage() {
     const maxPeople = Math.max(1, freeSeats);
     const totalCost = numberOfPeople * ticketPrice;
 
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        // Używamy toLocaleDateString z formatem 'en-GB' dla uzyskania dd/MM/yyyy
+        return date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    };
+
     return (
         <Box sx={{ backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Header title="CinemaApp" onSignOut={handleSignOut} />
@@ -93,71 +103,136 @@ export default function BookingPage() {
 
                     <Typography variant="h4" sx={{ fontWeight: '700', mb: 4, mt: 2 }}>{movieData.title}</Typography>
 
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', mb: 3, textAlign: 'left' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Typography variant="body1"><strong>Hall:</strong> {currentScreening.hallName}</Typography>
-                            <Typography variant="body1"><strong>Price:</strong> {ticketPrice.toFixed(2)} PLN</Typography>
+                    {/* Prostokąt podsumowujący na wzór tego z TicketsPage */}
+                    <Box sx={{
+                        border: `1px solid ${colors.borderGrey || '#ddd'}`,
+                        borderRadius: '8px',
+                        p: 3,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '20px',
+                        textAlign: 'left'
+                    }}>
+                        {/* Siatka detali seansu - wymusza drugą kolumnę po środku */}<Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                        {/* --- LEWA KOLUMNA (Wyśrodkowana do lewej) --- */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
+                            <MapPin size={18} color={colors.darkgrey} />
+                            <Box>
+                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Hall</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{currentScreening.hallName}</Typography>
+                            </Box>
                         </Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Typography variant="body1"><strong>Date:</strong> {urlDate}</Typography>
-                            <Typography variant="body1"><strong>Time:</strong> {urlTime}</Typography>
+
+                        {/* --- PRAWA KOLUMNA (Wyrównana do prawej w jednej linii) --- */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
+                            <Wallet size={18} color={colors.darkgrey} />
+                            <Box sx={{ textAlign: 'left', width: '90px' }}>
+                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Price</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{ticketPrice.toFixed(2)} PLN</Typography>
+                            </Box>
                         </Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Typography variant="body1"><strong>Total seats:</strong> {totalSeats}</Typography>
-                            <Typography variant="body1"><strong>Free seats:</strong> {freeSeats}</Typography>
+
+                        {/* --- LEWA KOLUMNA --- */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
+                            <Calendar size={18} color={colors.darkgrey} />
+                            <Box>
+                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Date</Typography>
+                                {/* Tutaj wywołujemy funkcję formatującą */}
+                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{formatDate(urlDate || '')}</Typography>
+                            </Box>
+                        </Box>
+
+                        {/* --- PRAWA KOLUMNA --- */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
+                            <Users size={18} color={colors.darkgrey} />
+                            <Box sx={{ textAlign: 'left', width: '90px' }}>
+                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Total seats</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{totalSeats}</Typography>
+                            </Box>
+                        </Box>
+
+                        {/* --- LEWA KOLUMNA --- */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
+                            <Clock size={18} color={colors.darkgrey} />
+                            <Box sx={{ textAlign: 'left', width: '90px' }}>
+                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Time</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{urlTime}</Typography>
+                            </Box>
+                        </Box>
+
+                        {/* --- PRAWA KOLUMNA --- */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
+                            <UserCheck size={18} color={colors.darkgrey} />
+                            <Box sx={{ textAlign: 'left', width: '90px' }}>
+                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Free seats</Typography>
+                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{freeSeats}</Typography>
+                            </Box>
                         </Box>
                     </Box>
 
-                    <hr style={{ margin: '24px 0', border: 'none', borderTop: '1px solid #eee' }} />
+                        <Divider sx={{ my: 1 }} />
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, my: 4 }}>
-                        <Button
-                            variant="outlined"
-                            onClick={() => setNumberOfPeople(p => Math.max(1, p - 1))}
-                            disabled={numberOfPeople <= 1}
-                            sx={{
-                                borderRadius: '8px', minWidth: '48px', height: '48px',
-                                color: colors.black, borderColor: colors.black,
-                                '&:hover': { borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)' },
-                                '&.Mui-disabled': { borderColor: '#ccc', color: '#ccc' }
-                            }}
-                        >
-                            <Minus size={20} />
-                        </Button>
+                        {/* Kalkulator ilości miejsc i finalna cena - wyśrodkowane jeden pod drugim */}
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 3,
+                            mt: 0
+                        }}>
+                            {/* Przyciski +/- */}
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => setNumberOfPeople(p => Math.max(1, p - 1))}
+                                    disabled={numberOfPeople <= 1}
+                                    sx={{
+                                        borderRadius: '8px', minWidth: '40px', height: '40px',
+                                        color: colors.black, borderColor: colors.black,
+                                        '&:hover': { borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)' },
+                                        '&.Mui-disabled': { borderColor: '#ccc', color: '#ccc' }
+                                    }}
+                                >
+                                    <Minus size={18} />
+                                </Button>
 
-                        <Box sx={{ textAlign: 'center', minWidth: '80px' }}>
-                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{numberOfPeople}</Typography>
+                                <Box sx={{ textAlign: 'center', minWidth: '40px' }}>
+                                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{numberOfPeople}</Typography>
+                                </Box>
+
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => setNumberOfPeople(p => Math.min(maxPeople, p + 1))}
+                                    disabled={numberOfPeople >= maxPeople}
+                                    sx={{
+                                        borderRadius: '8px', minWidth: '40px', height: '40px',
+                                        color: colors.black, borderColor: colors.black,
+                                        '&:hover': { borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)' },
+                                        '&.Mui-disabled': { borderColor: '#ccc', color: '#ccc' }
+                                    }}
+                                >
+                                    <Plus size={18} />
+                                </Button>
+                            </Box>
+
+                            {/* Cena całkowita - teraz wyśrodkowana pod przyciskami */}
+                            <Box sx={{ textAlign: 'center' }}>
+                                <Typography variant="body2" sx={{ color: colors.darkgrey, mb: 0.5 }}>
+                                    {numberOfPeople} x {ticketPrice.toFixed(2)} PLN
+                                </Typography>
+                                <Typography variant="h6" sx={{ fontWeight: '800' }}>
+                                    Total: {totalCost.toFixed(2)} PLN
+                                </Typography>
+                            </Box>
                         </Box>
-
-                        <Button
-                            variant="outlined"
-                            onClick={() => setNumberOfPeople(p => Math.min(maxPeople, p + 1))}
-                            disabled={numberOfPeople >= maxPeople}
-                            sx={{
-                                borderRadius: '8px', minWidth: '48px', height: '48px',
-                                color: colors.black, borderColor: colors.black,
-                                '&:hover': { borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)' },
-                                '&.Mui-disabled': { borderColor: '#ccc', color: '#ccc' }
-                            }}
-                        >
-                            <Plus size={20} />
-                        </Button>
-                    </Box>
-
-                    <Box sx={{ mb: 3 }}>
-                        <Typography variant="body1" sx={{ color: colors.darkgrey, mb: 1 }}>
-                            {numberOfPeople} x {ticketPrice.toFixed(2)} PLN
-                        </Typography>
-                        <Typography variant="h5" sx={{ fontWeight: '800' }}>
-                            Total Price: {totalCost.toFixed(2)} PLN
-                        </Typography>
                     </Box>
 
                     <Button
                         variant="contained"
                         sx={{
-                            backgroundColor: colors.black, px: 4, py: 1.5, borderRadius: '8px',
-                            '&:hover': { backgroundColor: colors.darkgrey }
+                            backgroundColor: colors.black, px: 4, py: 1.5, mt: 4, borderRadius: '8px',
+                            '&:hover': { backgroundColor: colors.darkgrey },
+                            width: '100%'
                         }}
                         onClick={handleConfirmReservation}
                     >
@@ -166,10 +241,10 @@ export default function BookingPage() {
                 </Paper>
             </Container>
 
-            {/* Error Notification Toast matching LoginPage */}
+            {/* Error Notification Toast */}
             <Snackbar
                 open={apiError !== null}
-                autoHideDuration={6000}
+                autoHideDuration={3000}
                 onClose={() => setApiError(null)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
             >
@@ -187,7 +262,7 @@ export default function BookingPage() {
             {/* Success Notification Toast */}
             <Snackbar
                 open={apiSuccess !== null}
-                autoHideDuration={6000}
+                autoHideDuration={3000}
                 onClose={() => setApiSuccess(null)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
             >
