@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Paper, Typography, CircularProgress, Alert, Chip, Divider, Button, Snackbar } from '@mui/material';
+import {
+    Box, Container, Paper, Typography, CircularProgress, Alert, Chip, Divider,
+    Button, Snackbar, Dialog, DialogTitle, DialogContent, DialogActions
+} from '@mui/material';
 import { Ticket, MapPin, Users, Calendar, Wallet, Clock } from 'lucide-react';
-import { colors } from '../../constants/theme';
+import { colors, fontSizes } from '../../constants/theme';
 import Header from '../../components/Header';
 import { TicketApi, TicketResponse } from '../../api/TicketApi';
 
@@ -15,6 +18,10 @@ export default function TicketsPage() {
     // States for backend error/success handling
     const [apiError, setApiError] = useState<string | null>(null);
     const [apiSuccess, setApiSuccess] = useState<string | null>(null);
+
+    // States for cancel dialog
+    const [cancelModalOpen, setCancelModalOpen] = useState(false);
+    const [ticketToCancel, setTicketToCancel] = useState<TicketResponse | null>(null);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -100,6 +107,31 @@ export default function TicketsPage() {
             setApiSuccess("PDF downloaded successfully!");
         } catch (err: any) {
             setApiError(err.message || "Failed to download PDF.");
+        }
+    };
+
+    // Obsługa otwierania/zamykania/akceptacji modala anulowania
+    const handleOpenCancelDialog = (ticket: TicketResponse) => {
+        setTicketToCancel(ticket);
+        setCancelModalOpen(true);
+    };
+
+    const handleCloseCancelDialog = () => {
+        setCancelModalOpen(false);
+        setTicketToCancel(null);
+    };
+
+    const handleConfirmCancel = async () => {
+        if (!ticketToCancel) return;
+        try {
+            await TicketApi.cancelTicket(ticketToCancel.id);
+            setApiSuccess("Ticket cancelled successfully!");
+            const data = await TicketApi.getUserTickets();
+            setTickets(data);
+        } catch (err: any) {
+            setApiError(err.message || "Failed to cancel ticket.");
+        } finally {
+            handleCloseCancelDialog();
         }
     };
 
@@ -192,44 +224,66 @@ export default function TicketsPage() {
                                     <Divider sx={{ mt: 1 }} />
 
                                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
-                                        {ticket.status === 'UNPAID' ? (
-                                            <Typography variant="caption" sx={{ color: colors.darkgrey, fontStyle: 'italic' }}>
-                                                Please pay by: {formatOnlyTime(ticket.dateDuePay)}, {formatOnlyDate(ticket.dateDuePay)} or the reservation will be cancelled.
-                                            </Typography>
-                                        ) : ticket.status === 'PAID' ? (
-                                            <Typography variant="caption" sx={{ color: colors.darkgrey, fontStyle: 'italic' }}>
-                                                Paid: {ticket.paymentTime ? `${formatOnlyTime(ticket.paymentTime)}, ${formatOnlyDate(ticket.paymentTime)}` : 'N/A'}
-                                            </Typography>
-                                        ) : <Box />}
+                                        {/* Informacje tekstowe po lewej */}
+                                        <Box>
+                                            {ticket.status === 'UNPAID' ? (
+                                                <Typography variant="caption" sx={{ color: colors.darkgrey, fontStyle: 'italic' }}>
+                                                    Please pay by: {formatOnlyTime(ticket.dateDuePay)}, {formatOnlyDate(ticket.dateDuePay)} or the reservation will be cancelled.
+                                                </Typography>
+                                            ) : ticket.status === 'PAID' ? (
+                                                <Typography variant="caption" sx={{ color: colors.darkgrey, fontStyle: 'italic' }}>
+                                                    Paid: {ticket.paymentTime ? `${formatOnlyTime(ticket.paymentTime)}, ${formatOnlyDate(ticket.paymentTime)}` : 'N/A'}
+                                                </Typography>
+                                            ) : null}
+                                        </Box>
 
-                                        {ticket.status === 'UNPAID' ? (
-                                            <Button
-                                                variant="contained"
-                                                size="small"
-                                                onClick={() => handlePay(ticket.id)}
-                                                sx={{
-                                                    backgroundColor: colors.black,
-                                                    px: 4, py: 1, borderRadius: '8px', ml: 2,
-                                                    '&:hover': { backgroundColor: colors.darkgrey }
-                                                }}
-                                            >
-                                                Pay
-                                            </Button>
-                                        ) : ticket.status === 'PAID' ? (
-                                            <Button
-                                                variant="outlined"
-                                                size="small"
-                                                onClick={() => handleDownloadPdf(ticket.id)}
-                                                sx={{
-                                                    borderColor: colors.black,
-                                                    color: colors.black,
-                                                    px: 4, py: 1, borderRadius: '8px', ml: 2,
-                                                    '&:hover': { borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)' }
-                                                }}
-                                            >
-                                                PDF
-                                            </Button>
-                                        ) : null}
+                                        {/* Przyciski po prawej (Flex do ułożenia Cancel i Pay/PDF) */}
+                                        <Box sx={{ display: 'flex', gap: '8px' }}>
+                                            {ticket.status !== 'CANCELLED' && (
+                                                <Button
+                                                    variant="outlined"
+                                                    size="small"
+                                                    onClick={() => handleOpenCancelDialog(ticket)}
+                                                    sx={{
+                                                        borderColor: colors.red || '#d32f2f',
+                                                        color: colors.red || '#d32f2f',
+                                                        px: 3, py: 1, borderRadius: '8px',
+                                                        '&:hover': { borderColor: '#b71c1c', backgroundColor: 'rgba(211, 47, 47, 0.04)' }
+                                                    }}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            )}
+
+                                            {ticket.status === 'UNPAID' ? (
+                                                <Button
+                                                    variant="contained"
+                                                    size="small"
+                                                    onClick={() => handlePay(ticket.id)}
+                                                    sx={{
+                                                        backgroundColor: colors.black,
+                                                        px: 4, py: 1, borderRadius: '8px',
+                                                        '&:hover': { backgroundColor: colors.darkgrey }
+                                                    }}
+                                                >
+                                                    Pay
+                                                </Button>
+                                            ) : ticket.status === 'PAID' ? (
+                                                <Button
+                                                    variant="outlined"
+                                                    size="small"
+                                                    onClick={() => handleDownloadPdf(ticket.id)}
+                                                    sx={{
+                                                        borderColor: colors.black,
+                                                        color: colors.black,
+                                                        px: 4, py: 1, borderRadius: '8px',
+                                                        '&:hover': { borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)' }
+                                                    }}
+                                                >
+                                                    PDF
+                                                </Button>
+                                            ) : null}
+                                        </Box>
                                     </Box>
                                 </Box>
                             ))}
@@ -237,6 +291,73 @@ export default function TicketsPage() {
                     )}
                 </Paper>
             </Container>
+
+            {/* Cancel Modal with styling from Profile page */}
+            <Dialog
+                open={cancelModalOpen}
+                onClose={handleCloseCancelDialog}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{ sx: { borderRadius: '12px', p: 1 } }}
+            >
+                <DialogTitle sx={{ fontWeight: '700', color: colors.black }}>
+                    Cancel Ticket
+                </DialogTitle>
+                <DialogContent sx={{ pt: '12px !important' }}>
+                    {ticketToCancel && (
+                        <Typography variant="body1" sx={{ color: colors.black }}>
+                            Are you sure you want to cancel ticket for <strong>{ticketToCancel.movieTitle}</strong> at <strong>{formatOnlyDate(ticketToCancel.screeningTime)}</strong> and <strong>{formatOnlyTime(ticketToCancel.screeningTime)}</strong> for <strong>{ticketToCancel.seatCounter}</strong> seats?
+                        </Typography>
+                    )}
+                </DialogContent>
+                <DialogActions sx={{ px: 3, pb: 2, mt: 1 }}>
+                    <Box sx={{ display: 'flex', width: '100%', gap: '12px' }}>
+                        <Button
+                            onClick={handleCloseCancelDialog}
+                            sx={{
+                                flex: 1,
+                                paddingTop: '10px',
+                                paddingBottom: '10px',
+                                borderRadius: '8px',
+                                textTransform: 'none',
+                                borderColor: colors.black,
+                                color: colors.black,
+                                fontSize: fontSizes?.medium || '1rem',
+                                fontWeight: '600',
+                                '&:hover': {
+                                    borderColor: colors.darkgrey,
+                                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                }
+                            }}
+                            variant="outlined"
+                        >
+                            No
+                        </Button>
+                        <Button
+                            onClick={handleConfirmCancel}
+                            sx={{
+                                flex: 1,
+                                backgroundColor: colors.black,
+                                color: colors.white,
+                                paddingTop: '10px',
+                                paddingBottom: '10px',
+                                borderRadius: '8px',
+                                textTransform: 'none',
+                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.18)',
+                                fontSize: fontSizes?.medium || '1rem',
+                                fontWeight: '600',
+                                '&:hover': {
+                                    backgroundColor: colors.darkgrey,
+                                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.18)'
+                                }
+                            }}
+                            variant="contained"
+                        >
+                            Yes
+                        </Button>
+                    </Box>
+                </DialogActions>
+            </Dialog>
 
             {/* Error Snackbar */}
             <Snackbar open={apiError !== null} autoHideDuration={3000} onClose={() => setApiError(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>

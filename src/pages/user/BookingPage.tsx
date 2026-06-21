@@ -26,6 +26,9 @@ export default function BookingPage() {
 
     const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
 
+    // Stan blokady przycisku na 5 sekund
+    const [isReserving, setIsReserving] = useState<boolean>(false);
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) { navigate('/login'); return; }
@@ -49,7 +52,15 @@ export default function BookingPage() {
     const handleSignOut = () => { localStorage.removeItem('token'); navigate('/login'); };
 
     const handleConfirmReservation = async () => {
-        if (!movieId || !screeningId) return;
+        if (!movieId || !screeningId || isReserving) return;
+
+        // Natychmiastowe włączenie blokady
+        setIsReserving(true);
+
+        // Uruchomienie licznika 5 sekund, po którym przycisk zostanie odblokowany (np. w razie błędu)
+        const cooldown = setTimeout(() => {
+            setIsReserving(false);
+        }, 5000);
 
         try {
             await TicketApi.reserveTickets({
@@ -58,15 +69,16 @@ export default function BookingPage() {
                 seatCounter: numberOfPeople
             });
 
-            // Set success message and redirect after delay
             setApiSuccess("Reservation successful!");
+
             setTimeout(() => {
+                clearTimeout(cooldown); // Czyszczenie timeoutu przed opuszczeniem strony
                 navigate('/tickets');
             }, 2000);
 
         } catch (err: any) {
-            // Replicate LoginPage's error handling by saving message to apiError state
             setApiError(err.message || "Reservation failed.");
+            // Nie wyłączamy tutaj `setIsReserving(false)`, dzięki czemu blokada trwa pełne 5 sekund z timeoutu
         }
     };
 
@@ -82,7 +94,6 @@ export default function BookingPage() {
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        // Używamy toLocaleDateString z formatem 'en-GB' dla uzyskania dd/MM/yyyy
         return date.toLocaleDateString('en-GB', {
             day: '2-digit',
             month: '2-digit',
@@ -97,13 +108,12 @@ export default function BookingPage() {
             <Container maxWidth="md" sx={{ mt: 6, mb: 4 }}>
                 <Paper elevation={3} sx={{ p: 4, borderRadius: '12px', textAlign: 'center', position: 'relative' }}>
 
-                    <IconButton onClick={() => navigate(-1)} sx={{ position: 'absolute', left: 16, top: 16, color: colors.black }}>
+                    <IconButton onClick={() => navigate(-1)} sx={{ position: 'absolute', left: 16, top: 16, color: colors.black }} disabled={isReserving}>
                         <ArrowLeft size={20} />
                     </IconButton>
 
                     <Typography variant="h4" sx={{ fontWeight: '700', mb: 4, mt: 2 }}>{movieData.title}</Typography>
 
-                    {/* Prostokąt podsumowujący na wzór tego z TicketsPage */}
                     <Box sx={{
                         border: `1px solid ${colors.borderGrey || '#ddd'}`,
                         borderRadius: '8px',
@@ -113,66 +123,58 @@ export default function BookingPage() {
                         gap: '20px',
                         textAlign: 'left'
                     }}>
-                        {/* Siatka detali seansu - wymusza drugą kolumnę po środku */}<Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                        {/* --- LEWA KOLUMNA (Wyśrodkowana do lewej) --- */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
-                            <MapPin size={18} color={colors.darkgrey} />
-                            <Box>
-                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Hall</Typography>
-                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{currentScreening.hallName}</Typography>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
+                                <MapPin size={18} color={colors.darkgrey} />
+                                <Box>
+                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Hall</Typography>
+                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{currentScreening.hallName}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
 
-                        {/* --- PRAWA KOLUMNA (Wyrównana do prawej w jednej linii) --- */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                            <Wallet size={18} color={colors.darkgrey} />
-                            <Box sx={{ textAlign: 'left', width: '90px' }}>
-                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Price</Typography>
-                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{ticketPrice.toFixed(2)} PLN</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
+                                <Wallet size={18} color={colors.darkgrey} />
+                                <Box sx={{ textAlign: 'left', width: '90px' }}>
+                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Price</Typography>
+                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{ticketPrice.toFixed(2)} PLN</Typography>
+                                </Box>
                             </Box>
-                        </Box>
 
-                        {/* --- LEWA KOLUMNA --- */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
-                            <Calendar size={18} color={colors.darkgrey} />
-                            <Box>
-                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Date</Typography>
-                                {/* Tutaj wywołujemy funkcję formatującą */}
-                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{formatDate(urlDate || '')}</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
+                                <Calendar size={18} color={colors.darkgrey} />
+                                <Box>
+                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Date</Typography>
+                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{formatDate(urlDate || '')}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
 
-                        {/* --- PRAWA KOLUMNA --- */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                            <Users size={18} color={colors.darkgrey} />
-                            <Box sx={{ textAlign: 'left', width: '90px' }}>
-                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Total seats</Typography>
-                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{totalSeats}</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
+                                <Users size={18} color={colors.darkgrey} />
+                                <Box sx={{ textAlign: 'left', width: '90px' }}>
+                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Total seats</Typography>
+                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{totalSeats}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
 
-                        {/* --- LEWA KOLUMNA --- */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
-                            <Clock size={18} color={colors.darkgrey} />
-                            <Box sx={{ textAlign: 'left', width: '90px' }}>
-                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Time</Typography>
-                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{urlTime}</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
+                                <Clock size={18} color={colors.darkgrey} />
+                                <Box sx={{ textAlign: 'left', width: '90px' }}>
+                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Time</Typography>
+                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{urlTime}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
 
-                        {/* --- PRAWA KOLUMNA --- */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                            <UserCheck size={18} color={colors.darkgrey} />
-                            <Box sx={{ textAlign: 'left', width: '90px' }}>
-                                <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Free seats</Typography>
-                                <Typography variant="body2" sx={{ fontWeight: '600' }}>{freeSeats}</Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
+                                <UserCheck size={18} color={colors.darkgrey} />
+                                <Box sx={{ textAlign: 'left', width: '90px' }}>
+                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Free seats</Typography>
+                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{freeSeats}</Typography>
+                                </Box>
                             </Box>
                         </Box>
-                    </Box>
 
                         <Divider sx={{ my: 1 }} />
 
-                        {/* Kalkulator ilości miejsc i finalna cena - wyśrodkowane jeden pod drugim */}
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'column',
@@ -180,12 +182,11 @@ export default function BookingPage() {
                             gap: 3,
                             mt: 0
                         }}>
-                            {/* Przyciski +/- */}
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                 <Button
                                     variant="outlined"
                                     onClick={() => setNumberOfPeople(p => Math.max(1, p - 1))}
-                                    disabled={numberOfPeople <= 1}
+                                    disabled={numberOfPeople <= 1 || isReserving}
                                     sx={{
                                         borderRadius: '8px', minWidth: '40px', height: '40px',
                                         color: colors.black, borderColor: colors.black,
@@ -203,7 +204,7 @@ export default function BookingPage() {
                                 <Button
                                     variant="outlined"
                                     onClick={() => setNumberOfPeople(p => Math.min(maxPeople, p + 1))}
-                                    disabled={numberOfPeople >= maxPeople}
+                                    disabled={numberOfPeople >= maxPeople || isReserving}
                                     sx={{
                                         borderRadius: '8px', minWidth: '40px', height: '40px',
                                         color: colors.black, borderColor: colors.black,
@@ -215,7 +216,6 @@ export default function BookingPage() {
                                 </Button>
                             </Box>
 
-                            {/* Cena całkowita - teraz wyśrodkowana pod przyciskami */}
                             <Box sx={{ textAlign: 'center' }}>
                                 <Typography variant="body2" sx={{ color: colors.darkgrey, mb: 0.5 }}>
                                     {numberOfPeople} x {ticketPrice.toFixed(2)} PLN
@@ -229,14 +229,28 @@ export default function BookingPage() {
 
                     <Button
                         variant="contained"
+                        disabled={isReserving}
                         sx={{
-                            backgroundColor: colors.black, px: 4, py: 1.5, mt: 4, borderRadius: '8px',
+                            backgroundColor: colors.black,
+                            px: 4,
+                            py: 1.5,
+                            mt: 4,
+                            borderRadius: '8px',
+                            textTransform: 'none',
+                            fontWeight: '600',
+                            width: '100%',
                             '&:hover': { backgroundColor: colors.darkgrey },
-                            width: '100%'
+                            '&:disabled': {
+                                backgroundColor: colors.darkgrey,
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                cursor: 'not-allowed',
+                                opacity: 0.6,
+                                boxShadow: 'none'
+                            }
                         }}
                         onClick={handleConfirmReservation}
                     >
-                        Confirm Reservation
+                        {isReserving ? "Processing..." : "Confirm Reservation"}
                     </Button>
                 </Paper>
             </Container>

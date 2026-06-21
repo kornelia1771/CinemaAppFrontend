@@ -104,7 +104,27 @@ export const TicketApi = {
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
-    }
+    },
+
+    cancelTicket: async (ticketId: number): Promise<any> => {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${BASE_URL}/tickets/${ticketId}/cancel`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to cancel ticket.");
+        }
+
+        return data;
+    },
+
 
 
 };
