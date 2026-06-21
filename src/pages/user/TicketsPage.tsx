@@ -65,15 +65,22 @@ export default function TicketsPage() {
 
     const fourHoursAgo = new Date(Date.now() - 4 * 60 * 60 * 1000);
     const sortedTickets = [...tickets].sort((a, b) => {
-        const timeA = new Date(a.screeningTime).getTime();
-        const timeB = new Date(b.screeningTime).getTime();
+        const isBottomA =
+            a.status === 'CANCELLED' ||
+            new Date(a.screeningTime) < fourHoursAgo;
 
-        const isPastA = new Date(a.screeningTime) < fourHoursAgo || a.status === 'CANCELLED';
-        const isPastB = new Date(b.screeningTime) < fourHoursAgo || b.status === 'CANCELLED';
+        const isBottomB =
+            b.status === 'CANCELLED' ||
+            new Date(b.screeningTime) < fourHoursAgo;
 
-        if (isPastA && !isPastB) return 1;
-        if (!isPastA && isPastB) return -1;
-        return timeB - timeA;
+        if (isBottomA && !isBottomB) return 1;
+        if (!isBottomA && isBottomB) return -1;
+
+        // sortowanie po dacie utworzenia biletu
+        return (
+            new Date(b.reservationTime).getTime() -
+            new Date(a.reservationTime).getTime()
+        );
     });
 
     const handlePay = async (ticketId: number) => {
