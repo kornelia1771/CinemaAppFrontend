@@ -77,5 +77,34 @@ export const TicketApi = {
         }
 
         return data;
+    },
+
+    // wewnątrz TicketApi
+    downloadTicketPdf: async (ticketId: number) => {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${BASE_URL}/tickets/${ticketId}/pdf`, {
+            method: "GET",
+            headers: {
+                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: "Failed to download PDF" }));
+            throw new Error(errorData.message || "Failed to download PDF");
+        }
+
+        // Pobranie pliku jako Blob
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `bilet_${ticketId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
     }
+
+
 };

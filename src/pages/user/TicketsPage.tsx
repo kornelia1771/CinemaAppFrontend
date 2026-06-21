@@ -87,6 +87,15 @@ export default function TicketsPage() {
         }
     };
 
+    const handleDownloadPdf = async (ticketId: number) => {
+        try {
+            await TicketApi.downloadTicketPdf(ticketId);
+            setApiSuccess("PDF downloaded successfully!");
+        } catch (err: any) {
+            setApiError(err.message || "Failed to download PDF.");
+        }
+    };
+
     return (
         <Box sx={{ backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Header title="CinemaApp" onSignOut={handleSignOut} />
@@ -140,14 +149,13 @@ export default function TicketsPage() {
                                             label={ticket.status}
                                             color={getStatusColor(ticket.status) as any}
                                             size="small"
-                                            sx={{ fontWeight: 'bold', borderRadius: '0px' }}
+                                            sx={{ fontWeight: 'bold', borderRadius: '6px' }}
                                         />
                                     </Box>
 
                                     <Divider sx={{ my: 1 }} />
 
                                     <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                                        {/* Details grid content remains identical as requested */}
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             <MapPin size={18} color={colors.darkgrey} />
                                             <Box><Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Hall</Typography><Typography variant="body2" sx={{ fontWeight: '600' }}>{ticket.hallName}</Typography></Box>
@@ -177,7 +185,6 @@ export default function TicketsPage() {
                                     <Divider sx={{ mt: 1 }} />
 
                                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
-                                        {/* Wyświetlanie informacji o płatności w zależności od statusu */}
                                         {ticket.status === 'UNPAID' ? (
                                             <Typography variant="caption" sx={{ color: colors.darkgrey, fontStyle: 'italic' }}>
                                                 Please pay by: {formatOnlyTime(ticket.dateDuePay)}, {formatOnlyDate(ticket.dateDuePay)} or the reservation will be cancelled.
@@ -186,11 +193,8 @@ export default function TicketsPage() {
                                             <Typography variant="caption" sx={{ color: colors.darkgrey, fontStyle: 'italic' }}>
                                                 Paid: {ticket.paymentTime ? `${formatOnlyTime(ticket.paymentTime)}, ${formatOnlyDate(ticket.paymentTime)}` : 'N/A'}
                                             </Typography>
-                                        ) : (
-                                            <Box /> // Pusty box, jeśli bilet jest np. CANCELLED
-                                        )}
+                                        ) : <Box />}
 
-                                        {/* Wyświetlanie odpowiedniego przycisku */}
                                         {ticket.status === 'UNPAID' ? (
                                             <Button
                                                 variant="contained"
@@ -208,7 +212,7 @@ export default function TicketsPage() {
                                             <Button
                                                 variant="outlined"
                                                 size="small"
-                                                // Tutaj dodaj obsługę pobierania PDF, np. onClick={() => downloadPdf(ticket.id)}
+                                                onClick={() => handleDownloadPdf(ticket.id)}
                                                 sx={{
                                                     borderColor: colors.black,
                                                     color: colors.black,
@@ -227,10 +231,12 @@ export default function TicketsPage() {
                 </Paper>
             </Container>
 
+            {/* Error Snackbar */}
             <Snackbar open={apiError !== null} autoHideDuration={3000} onClose={() => setApiError(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
                 <Alert onClose={() => setApiError(null)} severity="error" sx={{ width: '100%', borderRadius: '8px', fontWeight: '500' }} elevation={6} variant="filled">{apiError}</Alert>
             </Snackbar>
 
+            {/* Success Snackbar */}
             <Snackbar open={apiSuccess !== null} autoHideDuration={3000} onClose={() => setApiSuccess(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
                 <Alert onClose={() => setApiSuccess(null)} severity="success" sx={{ width: '100%', borderRadius: '8px', fontWeight: '500' }} elevation={6} variant="filled">{apiSuccess}</Alert>
             </Snackbar>
