@@ -17,7 +17,6 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                {/* Główny ekran startowy z logo Wine 🍷 */}
                 <Route path="/" element={<WelcomePage />} />
 
                 {/* Nowy widok rejestracji z dynamicznymi regułami haseł */}
