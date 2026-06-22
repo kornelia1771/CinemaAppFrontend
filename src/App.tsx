@@ -15,6 +15,7 @@ import AdminHallsPage from "./pages/admin/AdminHallsPage";
 import AdminMoviesPage from "./pages/admin/AdminMoviesPage";
 import AdminScreeningsPage from "./pages/admin/AdminScreeningsPage";
 import AdminTicketsPage from "./pages/admin/AdminTicketsPage";
+import AccessDeniedPage from "./pages/user/AccessDeniedPage";
 
 function App() {
     return (
@@ -42,6 +43,8 @@ function App() {
                 <Route path="/adminMovies" element={<AdminMoviesPage />} />
                 <Route path="/admin/screenings/:movieId" element={<AdminScreeningsPage />} />
                 <Route path="/adminTickets" element={<AdminTicketsPage />} />
+
+                <Route path="/access-denied" element={<AccessDeniedPage />} />
                 {/* Poprzednia ścieżka do sprawdzania połączenia ze Spring Bootem */}
             </Routes>
         </BrowserRouter>
