@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box, Button, Typography, Paper, Container, TextField, IconButton,
     CircularProgress, Snackbar, Alert
@@ -7,6 +8,7 @@ import {
 import {Eye, EyeOff} from 'lucide-react';
 import {colors} from '../../constants/theme';
 import HeaderLogin from "../../components/HeaderLogin";
+import LanguageSwitcher from "../../components/LanguageSwitcher";
 import {
     LoginSafeAreaContainer, LoginCenterArea, LoginFormWrapper,
     LoginFormScroll, LoginFormScrollContent,
@@ -17,18 +19,13 @@ import {
     LoginSignInButtonDisabled, LoginSignInButtonText, LoginDividerContainer,
     LoginDividerLine, LoginDividerText, LoginDevButtonsCol, LoginTitle
 } from '../../styles/LoginStyles';
-import {
-    LoginTitle as LoginTitleString, LoginDescription as LoginDescriptionText,
-    EmailLabel, EmailPlaceholder, PasswordLabel,
-    PasswordPlaceholder, ValidationError,
-    SignInButton, SignInDevUser, SignInDevAdmin,
-    DevModeDivider, ShowPasswordLabel, HidePasswordLabel
-} from '../../strings/loginStrings';
 import {handleSignIn, handleAdminSignIn, handleDevUserSignIn} from '../../helper/LoginHelper';
 import {emailRegex} from "../../helper/SharedHeper";
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -43,7 +40,8 @@ export default function LoginPage() {
     };
 
     return (
-        <Box sx={{...LoginSafeAreaContainer(), flexDirection: 'column'}}>
+        <Box sx={{...LoginSafeAreaContainer(), flexDirection: 'column', position: 'relative'}}>
+            <LanguageSwitcher />
             <Container maxWidth={false} disableGutters sx={LoginCenterArea()}>
                 <Paper elevation={3} sx={{...LoginFormWrapper(), marginTop: '8px'}}>
                     <Box sx={{...LoginFormScroll(), ...LoginFormScrollContent(), overflowY: 'auto'}}>
@@ -51,20 +49,20 @@ export default function LoginPage() {
                         <HeaderLogin/>
 
                         <Typography variant="h5" component="h2" sx={LoginTitle()}>
-                            {LoginTitleString}
+                            {t('login.title')}
                         </Typography>
                         <Typography variant="body2" sx={LoginDescription()}>
-                            {LoginDescriptionText}
+                            {t('login.description')}
                         </Typography>
 
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={LoginFormContainer()}>
 
-                            <Typography sx={LoginInputLabel()}>{EmailLabel}</Typography>
+                            <Typography sx={LoginInputLabel()}>{t('login.emailLabel')}</Typography>
                             <TextField
                                 fullWidth
                                 variant="standard"
                                 type="email"
-                                placeholder={EmailPlaceholder}
+                                placeholder={t('login.emailPlaceholder')}
                                 value={email}
                                 onChange={(e) => {
                                     setEmail(e.target.value);
@@ -77,7 +75,7 @@ export default function LoginPage() {
                             />
 
                             <Box sx={LoginLabelRow()}>
-                                <Typography sx={LoginInputLabel()}>{PasswordLabel}</Typography>
+                                <Typography sx={LoginInputLabel()}>{t('login.passwordLabel')}</Typography>
                                 <Box
                                     component="span"
                                     onClick={() => navigate('/forgot-password')}
@@ -91,7 +89,7 @@ export default function LoginPage() {
                                     fullWidth
                                     variant="standard"
                                     type={isPasswordVisible ? "text" : "password"}
-                                    placeholder={PasswordPlaceholder}
+                                    placeholder={t('login.passwordPlaceholder')}
                                     value={password}
                                     onChange={(e) => {
                                         setPassword(e.target.value);
@@ -105,7 +103,7 @@ export default function LoginPage() {
                                 />
                                 <IconButton
                                     onClick={() => setIsPasswordVisible(v => !v)}
-                                    aria-label={isPasswordVisible ? HidePasswordLabel : ShowPasswordLabel}
+                                    aria-label={isPasswordVisible ? t('login.hidePasswordLabel') : t('login.showPasswordLabel')}
                                     sx={{...LoginPasswordToggleAbsolute(), position: 'absolute', right: '8px'}}
                                 >
                                     {isPasswordVisible ? (
@@ -118,7 +116,7 @@ export default function LoginPage() {
 
                             <Box sx={LoginValidationContainer()}>
                                 {(!isFormValid && (email.length > 0 || password.length > 0) || showValidationError) ? (
-                                    <Typography sx={LoginValidationError()}>{ValidationError}</Typography>
+                                    <Typography sx={LoginValidationError()}>{t('login.validationError')}</Typography>
                                 ) : null}
                             </Box>
 
@@ -137,12 +135,12 @@ export default function LoginPage() {
                                 {loading ? (
                                     <CircularProgress size={24} sx={{color: colors.white}}/>
                                 ) : (
-                                    SignInButton
+                                    t('login.signInButton')
                                 )}
                             </Button>
                             <Box sx={LoginDividerContainer()}>
                                 <Box sx={LoginDividerLine()}/>
-                                <Typography sx={LoginDividerText()}>{DevModeDivider}</Typography>
+                                <Typography sx={LoginDividerText()}>{t('login.devModeDivider')}</Typography>
                                 <Box sx={LoginDividerLine()}/>
                             </Box>
 
@@ -162,7 +160,7 @@ export default function LoginPage() {
                                         '&:hover': {backgroundColor: colors.borderGrey}
                                     }}
                                 >
-                                    {loading ? <CircularProgress size={24} sx={{color: colors.white}}/> : SignInDevUser}
+                                    {loading ? <CircularProgress size={24} sx={{color: colors.white}}/> : t('login.signInDevUser')}
                                 </Button>
 
                                 <Button
@@ -182,7 +180,7 @@ export default function LoginPage() {
                                     }}
                                 >
                                     {loading ?
-                                        <CircularProgress size={24} sx={{color: colors.white}}/> : SignInDevAdmin}
+                                        <CircularProgress size={24} sx={{color: colors.white}}/> : t('login.signInDevAdmin')}
                                 </Button>
                             </Box>
 

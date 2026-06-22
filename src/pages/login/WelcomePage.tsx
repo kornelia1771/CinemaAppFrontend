@@ -1,24 +1,25 @@
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
 import {Box, Button, Typography, Paper, Container} from '@mui/material';
 import {TvMinimalPlay} from 'lucide-react';
 import {colors} from '../../constants/theme';
+import LanguageSwitcher from "../../components/LanguageSwitcher";
 import {
     LoginSafeAreaContainer, LoginCenterArea, LoginFormWrapper,
     LoginInnerContent, LoginTitleRow, LoginTitleText,
     LoginDescription, LoginButtonContainer, LoginButton,
     LoginButtonText
 } from '../../styles/LoginStyles';
-import {
-    WelcomeDescription, SignInButton,
-    SignUpButton, HeaderDefaultTitle
-} from '../../strings/loginStrings';
-
 
 export default function WelcomePage() {
     const navigate = useNavigate();
+    const {t} = useTranslation();
+
     return (
-        <Box sx={LoginSafeAreaContainer()}>
+        <Box sx={{...LoginSafeAreaContainer(), position: 'relative'}}>
+            <LanguageSwitcher/>
+
             <Container maxWidth={false} disableGutters sx={LoginCenterArea()}>
                 <Paper elevation={3} sx={LoginFormWrapper()}>
                     <Box sx={LoginInnerContent()}>
@@ -30,7 +31,7 @@ export default function WelcomePage() {
                                 component="h1"
                                 sx={LoginTitleText()}
                             >
-                                {HeaderDefaultTitle}
+                                {t('welcome.title')}
                             </Typography>
                         </Box>
 
@@ -38,7 +39,7 @@ export default function WelcomePage() {
                             variant="body1"
                             sx={LoginDescription()}
                         >
-                            {WelcomeDescription}
+                            {t('welcome.description')}
                         </Typography>
 
                         <Box sx={LoginButtonContainer()}>
@@ -51,7 +52,7 @@ export default function WelcomePage() {
                                     ...LoginButtonText()
                                 }}
                             >
-                                {SignInButton}
+                                {t('welcome.signInButton')}
                             </Button>
 
                             <Button
@@ -63,7 +64,7 @@ export default function WelcomePage() {
                                     ...LoginButtonText()
                                 }}
                             >
-                                {SignUpButton}
+                                {t('welcome.signUpButton')}
                             </Button>
                         </Box>
 

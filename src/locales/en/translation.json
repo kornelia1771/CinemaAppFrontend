@@ -1,0 +1,23 @@
+{
+  "login": {
+    "title": "Sign In",
+    "description": "Enter your credentials to access your account",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Email@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Password",
+    "validationError": "Incorrect email or password format.",
+    "signInButton": "Sign In",
+    "signInDevUser": "Sign In | User",
+    "signInDevAdmin": "Sign In | Admin",
+    "devModeDivider": "dev mode",
+    "showPasswordLabel": "Show password",
+    "hidePasswordLabel": "Hide password"
+  },
+  "welcome": {
+    "title": "CinemaApp",
+    "description": "Sign in or create an account to book movie tickets",
+    "signInButton": "Sign In",
+    "signUpButton": "Sign Up"
+  }
+}

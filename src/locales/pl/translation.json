@@ -1,0 +1,23 @@
+{
+  "login": {
+    "title": "Zaloguj się",
+    "description": "Wprowadź swoje dane, aby uzyskać dostęp do konta",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Email@przyklad.pl",
+    "passwordLabel": "Hasło",
+    "passwordPlaceholder": "Hasło",
+    "validationError": "Nieprawidłowy format email lub hasła.",
+    "signInButton": "Zaloguj się",
+    "signInDevUser": "Zaloguj | Użytkownik",
+    "signInDevAdmin": "Zaloguj | Admin",
+    "devModeDivider": "tryb dewelopera",
+    "showPasswordLabel": "Pokaż hasło",
+    "hidePasswordLabel": "Ukryj hasło"
+  },
+  "welcome": {
+    "title": "CinemaApp",
+    "description": "Zaloguj się lub załóż konto, aby rezerwować bilety na filmy",
+    "signInButton": "Zaloguj się",
+    "signUpButton": "Zarejestruj się"
+  }
+}
