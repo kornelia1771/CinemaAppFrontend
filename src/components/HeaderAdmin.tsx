@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { TvMinimalPlay, LogOut, Users, Film, Ticket } from 'lucide-react';
+import {TvMinimalPlay, LogOut, Users, Film, Ticket, Building2} from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { colors } from '../constants/theme';
 import {
@@ -74,10 +74,22 @@ const HeaderAdmin: React.FC<HeaderAdminProps> = ({
                     Users
                 </Button>
 
+
+                <Button
+                    variant="text"
+                    startIcon={<Building2 size={18} />}
+                    // onClick={() => navigate('/halls')}
+                    // sx={getButtonStyles('/adminHalls')}
+                    onClick={() => navigate('/adminHalls')}
+                    sx={getButtonStyles('/adminHalls')}
+                >
+                    Halls
+                </Button>
+
                 <Button
                     variant="text"
                     startIcon={<Film size={18} />}
-                    onClick={() => navigate('/movies')}
+                    onClick={() => navigate('/adminMovies')}
                     sx={getButtonStyles('/adminMovies')}
                 >
                     Movies
@@ -86,7 +98,7 @@ const HeaderAdmin: React.FC<HeaderAdminProps> = ({
                 <Button
                     variant="text"
                     startIcon={<Ticket size={18} />}
-                    onClick={() => navigate('/tickets')}
+                    onClick={() => navigate('/adminTickets')}
                     sx={getButtonStyles('/adminTickets')}
                 >
                     Tickets
