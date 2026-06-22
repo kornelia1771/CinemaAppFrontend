@@ -68,8 +68,7 @@ export const AuthApi = {
         const data = await response.json();
 
         if (!response.ok) {
-            // Your Spring Boot catch block returns BadRequest with exception message mapped to the token property
-            throw new Error(data.token || 'An unexpected error occurred during sign in.');
+            throw new Error(data.message || 'An unexpected error occurred during sign in.');
         }
 
         return data as LoginResponse;

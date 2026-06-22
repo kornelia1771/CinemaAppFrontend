@@ -23,7 +23,7 @@ import {
     RegisterTitle, RegisterDescription, NameLabel, NamePlaceholder,
     SurnameLabel, SurnamePlaceholder, EmailLabel, EmailPlaceholder,
     PasswordLabel, PasswordPlaceholder, ConfirmPasswordLabel,
-    ConfirmPasswordPlaceholder, SignUpButton, SignUpDevUser,
+    ConfirmPasswordPlaceholder, SignUpButton,
     IncorrectDataFormat, PasswordsDoNotMatch, PasswordMinLength,
     PasswordUppercase, PasswordLowercase, PasswordNumber, PasswordSpecial
 } from '../../strings/loginStrings';
@@ -140,20 +140,6 @@ export default function RegisterPage() {
         } finally {
             setLoading(false);
         }
-    };
-
-    // Developer function for quick form filling
-    const handleDevSignUpClick = () => {
-        setName('John');
-        setSurname('Doe');
-        setEmail(`john.doe.${Date.now()}@example.com`);
-        setPassword('Password123!');
-        setConfirm('Password123!');
-        setTouchedName(true);
-        setTouchedSurname(true);
-        setTouchedEmail(true);
-        setTouchedPassword(true);
-        setTouchedConfirm(true);
     };
 
     // Handle toast closing manually if needed
@@ -370,26 +356,6 @@ export default function RegisterPage() {
                                 ) : (
                                     SignUpButton
                                 )}
-                            </Button>
-
-                            {/* Developer Quick-Fill Button */}
-                            <Button
-                                type="button"
-                                variant="contained"
-                                fullWidth
-                                disabled={loading}
-                                onClick={handleDevSignUpClick}
-                                sx={{
-                                    ...LoginSignInButton(),
-                                    ...LoginSignInButtonText(),
-                                    textTransform: 'none',
-                                    marginTop: '12px',
-                                    backgroundColor: colors.lightgrey,
-                                    color: colors.black,
-                                    '&:hover': { backgroundColor: colors.borderGrey }
-                                }}
-                            >
-                                {SignUpDevUser}
                             </Button>
 
                         </Box>
