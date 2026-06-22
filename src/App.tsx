@@ -14,6 +14,7 @@ import BookingPage from "./pages/user/BookingPage";
 import TicketsPage from "./pages/user/TicketsPage";
 import AdminHallsPage from "./pages/admin/AdminHallsPage";
 import AdminMoviesPage from "./pages/admin/AdminMoviesPage";
+import AdminScreeningsPage from "./pages/admin/AdminScreeningsPage";
 
 function App() {
     return (
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/adminHome" element={<AdminHomePage />} />
                 <Route path="/adminHalls" element={<AdminHallsPage />} />
                 <Route path="/adminMovies" element={<AdminMoviesPage />} />
+                <Route path="/admin/screenings/:movieId" element={<AdminScreeningsPage />} />
                 {/* Poprzednia ścieżka do sprawdzania połączenia ze Spring Bootem */}
                 <Route path="/test" element={
                     <div className="App">
