@@ -19,9 +19,6 @@ export default function AdminHomePage() {
     const [apiError, setApiError] = useState<string | null>(null);
     const [apiSuccess, setApiSuccess] = useState<string | null>(null);
 
-    // Stany Modali
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [userToDelete, setUserToDelete] = useState<AdminUserResponse | null>(null);
 
     const [addModalOpen, setAddModalOpen] = useState(false);
     // Zmienione domyślne role na 'CLIENT'
@@ -54,25 +51,6 @@ export default function AdminHomePage() {
         navigate("/login");
     };
 
-    // --- DELETE LOGIC ---
-    const handleOpenDelete = (user: AdminUserResponse) => {
-        setUserToDelete(user);
-        setDeleteModalOpen(true);
-    };
-
-    const handleConfirmDelete = async () => {
-        if (!userToDelete) return;
-        try {
-            await AdminUserApi.deleteUser(userToDelete.id);
-            setApiSuccess("User deleted successfully.");
-            fetchUsers();
-        } catch (err: any) {
-            setApiError(err.message || "Failed to delete user.");
-        } finally {
-            setDeleteModalOpen(false);
-            setUserToDelete(null);
-        }
-    };
 
     // --- ADD LOGIC ---
     const handleOpenAdd = () => {
@@ -202,9 +180,6 @@ export default function AdminHomePage() {
                                                 <IconButton onClick={() => handleOpenEdit(user)} sx={{ color: colors.darkgrey, "&:hover": { color: colors.black } }}>
                                                     <Pencil size={18} />
                                                 </IconButton>
-                                                <IconButton onClick={() => handleOpenDelete(user)} sx={{ color: colors.red || "#d32f2f", "&:hover": { color: "#b71c1c" } }}>
-                                                    <Trash2 size={18} />
-                                                </IconButton>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -278,22 +253,6 @@ export default function AdminHomePage() {
                         </Box>
                     </DialogActions>
                 </form>
-            </Dialog>
-
-            {/* --- DELETE USER MODAL --- */}
-            <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: '12px', p: 1 } }}>
-                <DialogTitle sx={{ fontWeight: '700', color: colors.black }}>Delete User</DialogTitle>
-                <DialogContent sx={{ pt: '12px !important' }}>
-                    <Typography variant="body1" sx={{ color: colors.black }}>
-                        Are you sure you want to delete <strong>{userToDelete?.email}</strong>?
-                    </Typography>
-                </DialogContent>
-                <DialogActions sx={{ px: 3, pb: 2, mt: 1 }}>
-                    <Box sx={{ display: 'flex', width: '100%', gap: '12px' }}>
-                        <Button onClick={() => setDeleteModalOpen(false)} variant="outlined" sx={{ flex: 1, borderRadius: '8px', textTransform: 'none', borderColor: colors.black, color: colors.black, fontWeight: '600', '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' } }}>Cancel</Button>
-                        <Button onClick={handleConfirmDelete} variant="contained" sx={{ flex: 1, borderRadius: '8px', textTransform: 'none', backgroundColor: colors.black, color: 'white', fontWeight: '600', '&:hover': { backgroundColor: colors.darkgrey } }}>Delete</Button>
-                    </Box>
-                </DialogActions>
             </Dialog>
 
             {/* Snackbars */}

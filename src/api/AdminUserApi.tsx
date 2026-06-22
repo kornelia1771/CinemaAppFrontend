@@ -81,24 +81,5 @@ export const AdminUserApi = {
         }
 
         return data;
-    },
-
-    deleteUser: async (id: number): Promise<any> => {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${BASE_URL}/admin/user/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
-            }
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Failed to delete user.");
-        }
-
-        return data;
     }
 };

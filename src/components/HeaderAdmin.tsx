@@ -55,7 +55,7 @@ const HeaderAdmin: React.FC<HeaderAdminProps> = ({
             {/* Logo */}
             <Box
                 sx={{ ...HeaderLogoRow(), cursor: 'pointer' }}
-                onClick={() => navigate('/users')}
+                onClick={() => navigate('/home')}
             >
                 <TvMinimalPlay size={24} color={colors.black} />
                 <Typography sx={HeaderLogoText()}>
