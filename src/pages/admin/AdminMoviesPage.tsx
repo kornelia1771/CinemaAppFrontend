@@ -176,7 +176,7 @@ export default function AdminMoviesPage() {
                                     <TableRow>
                                         <TableCell sx={{ fontWeight: "bold", width: '80px', textAlign: 'center' }}>Poster</TableCell>
                                         <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
-                                        <TableCell sx={{ fontWeight: "bold", width: '35%' }}>Description</TableCell>
+                                        {/*<TableCell sx={{ fontWeight: "bold", width: '35%' }}>Description</TableCell>*/}
                                         <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Duration</TableCell>
                                         <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Status</TableCell>
                                         <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Actions</TableCell>
@@ -210,17 +210,17 @@ export default function AdminMoviesPage() {
                                                 )}
                                             </TableCell>
                                             <TableCell sx={{ fontWeight: 600 }}>{movie.title}</TableCell>
-                                            <TableCell>
-                                                <Typography variant="body2" sx={{
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 2,
-                                                    WebkitBoxOrient: 'vertical',
-                                                    overflow: 'hidden',
-                                                    color: colors.darkgrey
-                                                }}>
-                                                    {movie.description || "No description"}
-                                                </Typography>
-                                            </TableCell>
+                                            {/*<TableCell>*/}
+                                            {/*    <Typography variant="body2" sx={{*/}
+                                            {/*        display: '-webkit-box',*/}
+                                            {/*        WebkitLineClamp: 2,*/}
+                                            {/*        WebkitBoxOrient: 'vertical',*/}
+                                            {/*        overflow: 'hidden',*/}
+                                            {/*        color: colors.darkgrey*/}
+                                            {/*    }}>*/}
+                                            {/*        {movie.description || "No description"}*/}
+                                            {/*    </Typography>*/}
+                                            {/*</TableCell>*/}
                                             <TableCell sx={{ textAlign: "center" }}>{movie.duration} min</TableCell>
                                             <TableCell sx={{ textAlign: "center" }}>
                                                 <Chip
@@ -243,7 +243,9 @@ export default function AdminMoviesPage() {
 
                                     {movies.length === 0 && (
                                         <TableRow>
-                                            <TableCell colSpan={6} sx={{ textAlign: "center", py: 4, color: colors.darkgrey }}>
+                                            <TableCell colSpan={5} sx={{ textAlign: "center", py: 4, color: colors.darkgrey }}>
+
+                                            {/*<TableCell colSpan={6} sx={{ textAlign: "center", py: 4, color: colors.darkgrey }}>*/}
                                                 No movies found. Click "Add Movie" to start.
                                             </TableCell>
                                         </TableRow>

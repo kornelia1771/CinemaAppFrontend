@@ -42,6 +42,23 @@ export default function AdminScreeningsPage() {
         fetchData();
     }, [movieId, navigate]);
 
+    const now = new Date();
+
+    const minDateTime = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+    )
+        .toISOString()
+        .slice(0, 16);
+
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() + 1);
+
+    const maxDateTime = new Date(
+        maxDate.getTime() - maxDate.getTimezoneOffset() * 60000
+    )
+        .toISOString()
+        .slice(0, 16);
+
     const fetchData = async () => {
         try {
             setLoading(true);
@@ -293,6 +310,10 @@ export default function AdminScreeningsPage() {
                                 InputLabelProps={{ shrink: true }}
                                 value={addForm.screeningTime}
                                 onChange={(e) => setAddForm({...addForm, screeningTime: e.target.value})}
+                                inputProps={{
+                                    min: minDateTime,
+                                    max: maxDateTime
+                                }}
                             />
 
                             <TextField
@@ -345,6 +366,10 @@ export default function AdminScreeningsPage() {
                                 InputLabelProps={{ shrink: true }}
                                 value={editForm.screeningTime}
                                 onChange={(e) => setEditForm({...editForm, screeningTime: e.target.value})}
+                                inputProps={{
+                                    min: minDateTime,
+                                    max: maxDateTime
+                                }}
                             />
 
                             <TextField
