@@ -211,9 +211,9 @@ export default function AdminScreeningsPage() {
                                         <Typography variant="body2" sx={{ color: colors.darkgrey, mt: 0.5, maxWidth: 600 }}>
                                             {movieData.description}
                                         </Typography>
-                                        <Typography variant="caption" sx={{ display: 'block', mt: 1, fontWeight: 'bold' }}>
-                                            Duration: {movieData.duration} min
-                                        </Typography>
+                                        {/*<Typography variant="caption" sx={{ display: 'block', mt: 1, fontWeight: 'bold' }}>*/}
+                                        {/*    Duration: {movieData.duration} min*/}
+                                        {/*</Typography>*/}
                                     </Box>
                                 </Box>
                             )}
