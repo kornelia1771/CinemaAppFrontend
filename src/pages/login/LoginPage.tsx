@@ -21,7 +21,7 @@ import {
 import {
     LoginTitle as LoginTitleString, LoginDescription as LoginDescriptionText,
     EmailLabel, EmailPlaceholder, PasswordLabel,
-    PasswordPlaceholder, ForgotPasswordLink, ValidationError,
+    PasswordPlaceholder, ValidationError,
     SignInButton, SignInDevUser, SignInDevAdmin,
     DevModeDivider, ShowPasswordLabel, HidePasswordLabel
 } from '../../strings/loginStrings';
@@ -92,7 +92,6 @@ export default function LoginPage() {
                                     onClick={() => navigate('/forgot-password')}
                                     sx={{ ...LoginForgotInline(), cursor: 'pointer' }}
                                 >
-                                    {ForgotPasswordLink}
                                 </Box>
                             </Box>
 
