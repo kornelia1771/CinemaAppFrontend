@@ -199,106 +199,240 @@ export default function AdminHallsPage() {
                 </Paper>
             </Container>
 
-            <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} fullWidth maxWidth="xs"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
+            <Dialog
+                open={addModalOpen}
+                onClose={() => setAddModalOpen(false)}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
                 <form onSubmit={handleConfirmAdd}>
-                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Add New Hall</DialogTitle>
-                    <DialogContent sx={{display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important'}}>
-                        <TextField label="Hall Name" required fullWidth value={addForm.name}
-                                   onChange={(e) => setAddForm({...addForm, name: e.target.value})}/>
-                        <TextField label="Total Seats" type="number" required fullWidth value={addForm.totalSeats}
-                                   onChange={(e) => setAddForm({...addForm, totalSeats: e.target.value as any})}
-                                   inputProps={{min: 1}}/>
+                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                        Add New Hall
+                    </DialogTitle>
+
+                    <DialogContent sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        pt: '12px !important'
+                    }}>
+                        <TextField
+                            label="Hall Name"
+                            required
+                            fullWidth
+                            value={addForm.name}
+                            onChange={(e) => setAddForm({...addForm, name: e.target.value})}
+                        />
+
+                        <TextField
+                            label="Total Seats"
+                            type="number"
+                            required
+                            fullWidth
+                            value={addForm.totalSeats}
+                            onChange={(e) => setAddForm({...addForm, totalSeats: e.target.value as any})}
+                            inputProps={{min: 1}}
+                        />
                     </DialogContent>
+
                     <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                         <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                            <Button onClick={() => setAddModalOpen(false)} variant="outlined" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                borderColor: colors.black,
-                                color: colors.black,
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: 'rgba(0,0,0,0.04)'}
-                            }}>Cancel</Button>
-                            <Button type="submit" variant="contained" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                backgroundColor: colors.black,
-                                color: 'white',
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: colors.darkgrey}
-                            }}>Save</Button>
+                            <Button
+                                onClick={() => setAddModalOpen(false)}
+                                variant="outlined"
+                                sx={{
+                                    flex: 1,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    borderColor: colors.black,
+                                    color: colors.black,
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        borderColor: colors.darkgrey,
+                                        backgroundColor: 'rgba(0,0,0,0.04)',
+                                    }
+                                }}
+                            >
+                                Cancel
+                            </Button>
+
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{
+                                    flex: 1,
+                                    backgroundColor: colors.black,
+                                    color: colors.white,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        backgroundColor: colors.darkgrey,
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    }
+                                }}
+                            >
+                                Save
+                            </Button>
                         </Box>
                     </DialogActions>
                 </form>
             </Dialog>
 
-            <Dialog open={editModalOpen} onClose={() => setEditModalOpen(false)} fullWidth maxWidth="xs"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
+            <Dialog
+                open={editModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
                 <form onSubmit={handleConfirmEdit}>
-                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Edit Hall</DialogTitle>
-                    <DialogContent sx={{display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important'}}>
-                        <TextField label="Hall Name" required fullWidth value={editForm.name}
-                                   onChange={(e) => setEditForm({...editForm, name: e.target.value})}/>
-                        <TextField label="Total Seats" type="number" required fullWidth value={editForm.totalSeats}
-                                   onChange={(e) => setEditForm({...editForm, totalSeats: e.target.value as any})}
-                                   inputProps={{min: 1}}/>
+                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                        Edit Hall
+                    </DialogTitle>
+
+                    <DialogContent sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        pt: '12px !important'
+                    }}>
+                        <TextField
+                            label="Hall Name"
+                            required
+                            fullWidth
+                            value={editForm.name}
+                            onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                        />
+
+                        <TextField
+                            label="Total Seats"
+                            type="number"
+                            required
+                            fullWidth
+                            value={editForm.totalSeats}
+                            onChange={(e) => setEditForm({...editForm, totalSeats: e.target.value as any})}
+                            inputProps={{min: 1}}
+                        />
                     </DialogContent>
+
                     <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                         <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                            <Button onClick={() => setEditModalOpen(false)} variant="outlined" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                borderColor: colors.black,
-                                color: colors.black,
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: 'rgba(0,0,0,0.04)'}
-                            }}>Cancel</Button>
-                            <Button type="submit" variant="contained" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                backgroundColor: colors.black,
-                                color: 'white',
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: colors.darkgrey}
-                            }}>Save</Button>
+                            <Button
+                                onClick={() => setEditModalOpen(false)}
+                                variant="outlined"
+                                sx={{
+                                    flex: 1,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    borderColor: colors.black,
+                                    color: colors.black,
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        borderColor: colors.darkgrey,
+                                        backgroundColor: 'rgba(0,0,0,0.04)',
+                                    }
+                                }}
+                            >
+                                Cancel
+                            </Button>
+
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{
+                                    flex: 1,
+                                    backgroundColor: colors.black,
+                                    color: colors.white,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        backgroundColor: colors.darkgrey,
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    }
+                                }}
+                            >
+                                Save
+                            </Button>
                         </Box>
                     </DialogActions>
                 </form>
             </Dialog>
 
-            <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} fullWidth maxWidth="xs"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
-                <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Delete Hall</DialogTitle>
+            <Dialog
+                open={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
+                <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                    Delete Hall
+                </DialogTitle>
+
                 <DialogContent sx={{pt: '12px !important'}}>
-                    <Typography variant="body1" sx={{color: colors.black}}>
-                        Are you sure you want to delete hall: <strong>{hallToDelete?.name}</strong>?
+                    <Typography sx={{color: colors.black}}>
+                        Are you sure you want to delete hall:{" "}
+                        <strong>{hallToDelete?.name}</strong>?
                     </Typography>
                 </DialogContent>
+
                 <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                     <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                        <Button onClick={() => setDeleteModalOpen(false)} variant="outlined" sx={{
-                            flex: 1,
-                            borderRadius: '8px',
-                            textTransform: 'none',
-                            borderColor: colors.black,
-                            color: colors.black,
-                            fontWeight: '600',
-                            '&:hover': {backgroundColor: 'rgba(0,0,0,0.04)'}
-                        }}>Cancel</Button>
-                        <Button onClick={handleConfirmDelete} variant="contained" sx={{
-                            flex: 1,
-                            borderRadius: '8px',
-                            textTransform: 'none',
-                            backgroundColor: colors.black,
-                            color: 'white',
-                            fontWeight: '600',
-                            '&:hover': {backgroundColor: colors.darkgrey}
-                        }}>Delete</Button>
+                        <Button
+                            onClick={() => setDeleteModalOpen(false)}
+                            variant="outlined"
+                            sx={{
+                                flex: 1,
+                                paddingTop: '10px',
+                                paddingBottom: '10px',
+                                borderRadius: '8px',
+                                textTransform: 'none',
+                                borderColor: colors.black,
+                                color: colors.black,
+                                fontWeight: '600',
+                                '&:hover': {
+                                    borderColor: colors.darkgrey,
+                                    backgroundColor: 'rgba(0,0,0,0.04)',
+                                }
+                            }}
+                        >
+                            Cancel
+                        </Button>
+
+                        <Button
+                            onClick={handleConfirmDelete}
+                            variant="contained"
+                            sx={{
+                                flex: 1,
+                                backgroundColor: colors.black,
+                                color: colors.white,
+                                paddingTop: '10px',
+                                paddingBottom: '10px',
+                                borderRadius: '8px',
+                                textTransform: 'none',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                fontWeight: '600',
+                                '&:hover': {
+                                    backgroundColor: colors.darkgrey,
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                }
+                            }}
+                        >
+                            Delete
+                        </Button>
                     </Box>
                 </DialogActions>
             </Dialog>

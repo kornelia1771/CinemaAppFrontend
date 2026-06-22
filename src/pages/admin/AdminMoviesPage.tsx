@@ -276,123 +276,304 @@ export default function AdminMoviesPage() {
                 </Paper>
             </Container>
 
-            <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} fullWidth maxWidth="sm"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
+            <Dialog
+                open={addModalOpen}
+                onClose={() => setAddModalOpen(false)}
+                fullWidth
+                maxWidth="sm"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
                 <form onSubmit={handleConfirmAdd}>
-                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Add New Movie</DialogTitle>
-                    <DialogContent sx={{display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important'}}>
-                        <TextField label="Movie Title" required fullWidth value={addForm.title}
-                                   onChange={(e) => setAddForm({...addForm, title: e.target.value})}/>
-                        <TextField label="Description" required fullWidth multiline rows={4} value={addForm.description}
-                                   onChange={(e) => setAddForm({...addForm, description: e.target.value})}/>
-                        <TextField label="Duration (minutes)" type="number" required fullWidth value={addForm.duration}
-                                   onChange={(e) => setAddForm({...addForm, duration: e.target.value as any})}
-                                   inputProps={{min: 1}}/>
-                        <TextField label="Poster Image URL" required fullWidth value={addForm.imageUrl}
-                                   onChange={(e) => setAddForm({...addForm, imageUrl: e.target.value})}/>
-                        <FormControlLabel control={<Switch checked={addForm.available} onChange={(e) => setAddForm({
-                            ...addForm,
-                            available: e.target.checked
-                        })} color="primary"/>} label="Available to Users"/>
+                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                        Add New Movie
+                    </DialogTitle>
+
+                    <DialogContent sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        pt: '12px !important'
+                    }}>
+                        <TextField
+                            label="Movie Title"
+                            required
+                            fullWidth
+                            value={addForm.title}
+                            onChange={(e) => setAddForm({...addForm, title: e.target.value})}
+                        />
+
+                        <TextField
+                            label="Description"
+                            required
+                            fullWidth
+                            multiline
+                            rows={4}
+                            value={addForm.description}
+                            onChange={(e) => setAddForm({...addForm, description: e.target.value})}
+                        />
+
+                        <TextField
+                            label="Duration (minutes)"
+                            type="number"
+                            required
+                            fullWidth
+                            value={addForm.duration}
+                            onChange={(e) => setAddForm({...addForm, duration: e.target.value as any})}
+                            inputProps={{min: 1}}
+                        />
+
+                        <TextField
+                            label="Poster Image URL"
+                            required
+                            fullWidth
+                            value={addForm.imageUrl}
+                            onChange={(e) => setAddForm({...addForm, imageUrl: e.target.value})}
+                        />
+
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={addForm.available}
+                                    onChange={(e) => setAddForm({
+                                        ...addForm,
+                                        available: e.target.checked
+                                    })}
+                                    color="primary"
+                                />
+                            }
+                            label="Available to Users"
+                        />
                     </DialogContent>
+
                     <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                         <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                            <Button onClick={() => setAddModalOpen(false)} variant="outlined" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                borderColor: colors.black,
-                                color: colors.black,
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: 'rgba(0,0,0,0.04)'}
-                            }}>Cancel</Button>
-                            <Button type="submit" variant="contained" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                backgroundColor: colors.black,
-                                color: 'white',
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: colors.darkgrey}
-                            }}>Save</Button>
+                            <Button
+                                onClick={() => setAddModalOpen(false)}
+                                variant="outlined"
+                                sx={{
+                                    flex: 1,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    borderColor: colors.black,
+                                    color: colors.black,
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        borderColor: colors.darkgrey,
+                                        backgroundColor: 'rgba(0,0,0,0.04)',
+                                    }
+                                }}
+                            >
+                                Cancel
+                            </Button>
+
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{
+                                    flex: 1,
+                                    backgroundColor: colors.black,
+                                    color: colors.white,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        backgroundColor: colors.darkgrey,
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    }
+                                }}
+                            >
+                                Save
+                            </Button>
                         </Box>
                     </DialogActions>
                 </form>
             </Dialog>
 
-            <Dialog open={editModalOpen} onClose={() => setEditModalOpen(false)} fullWidth maxWidth="sm"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
+            <Dialog
+                open={editModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                fullWidth
+                maxWidth="sm"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
                 <form onSubmit={handleConfirmEdit}>
-                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Edit Movie</DialogTitle>
-                    <DialogContent sx={{display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important'}}>
-                        <TextField label="Movie Title" required fullWidth value={editForm.title}
-                                   onChange={(e) => setEditForm({...editForm, title: e.target.value})}/>
-                        <TextField label="Description" required fullWidth multiline rows={4}
-                                   value={editForm.description}
-                                   onChange={(e) => setEditForm({...editForm, description: e.target.value})}/>
-                        <TextField label="Duration (minutes)" type="number" required fullWidth value={editForm.duration}
-                                   onChange={(e) => setEditForm({...editForm, duration: e.target.value as any})}
-                                   inputProps={{min: 1}}/>
-                        <TextField label="Poster Image URL" required fullWidth value={editForm.imageUrl}
-                                   onChange={(e) => setEditForm({...editForm, imageUrl: e.target.value})}/>
-                        <FormControlLabel control={<Switch checked={editForm.available} onChange={(e) => setEditForm({
-                            ...editForm,
-                            available: e.target.checked
-                        })} color="primary"/>} label="Available to Users"/>
+                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                        Edit Movie
+                    </DialogTitle>
+
+                    <DialogContent sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        pt: '12px !important'
+                    }}>
+                        <TextField
+                            label="Movie Title"
+                            required
+                            fullWidth
+                            value={editForm.title}
+                            onChange={(e) => setEditForm({...editForm, title: e.target.value})}
+                        />
+
+                        <TextField
+                            label="Description"
+                            required
+                            fullWidth
+                            multiline
+                            rows={4}
+                            value={editForm.description}
+                            onChange={(e) => setEditForm({...editForm, description: e.target.value})}
+                        />
+
+                        <TextField
+                            label="Duration (minutes)"
+                            type="number"
+                            required
+                            fullWidth
+                            value={editForm.duration}
+                            onChange={(e) => setEditForm({...editForm, duration: e.target.value as any})}
+                            inputProps={{min: 1}}
+                        />
+
+                        <TextField
+                            label="Poster Image URL"
+                            required
+                            fullWidth
+                            value={editForm.imageUrl}
+                            onChange={(e) => setEditForm({...editForm, imageUrl: e.target.value})}
+                        />
+
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={editForm.available}
+                                    onChange={(e) => setEditForm({
+                                        ...editForm,
+                                        available: e.target.checked
+                                    })}
+                                    color="primary"
+                                />
+                            }
+                            label="Available to Users"
+                        />
                     </DialogContent>
+
                     <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                         <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                            <Button onClick={() => setEditModalOpen(false)} variant="outlined" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                borderColor: colors.black,
-                                color: colors.black,
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: 'rgba(0,0,0,0.04)'}
-                            }}>Cancel</Button>
-                            <Button type="submit" variant="contained" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                backgroundColor: colors.black,
-                                color: 'white',
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: colors.darkgrey}
-                            }}>Save</Button>
+                            <Button
+                                onClick={() => setEditModalOpen(false)}
+                                variant="outlined"
+                                sx={{
+                                    flex: 1,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    borderColor: colors.black,
+                                    color: colors.black,
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        borderColor: colors.darkgrey,
+                                        backgroundColor: 'rgba(0,0,0,0.04)',
+                                    }
+                                }}
+                            >
+                                Cancel
+                            </Button>
+
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{
+                                    flex: 1,
+                                    backgroundColor: colors.black,
+                                    color: colors.white,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        backgroundColor: colors.darkgrey,
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    }
+                                }}
+                            >
+                                Save
+                            </Button>
                         </Box>
                     </DialogActions>
                 </form>
             </Dialog>
 
-            <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} fullWidth maxWidth="xs"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
-                <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Delete Movie</DialogTitle>
+            <Dialog
+                open={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
+                <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                    Delete Movie
+                </DialogTitle>
+
                 <DialogContent sx={{pt: '12px !important'}}>
-                    <Typography variant="body1" sx={{color: colors.black}}>
-                        Are you sure you want to delete movie: <strong>{movieToDelete?.title}</strong>?
+                    <Typography sx={{color: colors.black}}>
+                        Are you sure you want to delete movie:{" "}
+                        <strong>{movieToDelete?.title}</strong>?
                     </Typography>
                 </DialogContent>
+
                 <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                     <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                        <Button onClick={() => setDeleteModalOpen(false)} variant="outlined" sx={{
-                            flex: 1,
-                            borderRadius: '8px',
-                            textTransform: 'none',
-                            borderColor: colors.black,
-                            color: colors.black,
-                            fontWeight: '600',
-                            '&:hover': {backgroundColor: 'rgba(0,0,0,0.04)'}
-                        }}>Cancel</Button>
-                        <Button onClick={handleConfirmDelete} variant="contained" sx={{
-                            flex: 1,
-                            borderRadius: '8px',
-                            textTransform: 'none',
-                            backgroundColor: colors.black,
-                            color: 'white',
-                            fontWeight: '600',
-                            '&:hover': {backgroundColor: colors.darkgrey}
-                        }}>Delete</Button>
+                        <Button
+                            onClick={() => setDeleteModalOpen(false)}
+                            variant="outlined"
+                            sx={{
+                                flex: 1,
+                                paddingTop: '10px',
+                                paddingBottom: '10px',
+                                borderRadius: '8px',
+                                textTransform: 'none',
+                                borderColor: colors.black,
+                                color: colors.black,
+                                fontWeight: '600',
+                                '&:hover': {
+                                    borderColor: colors.darkgrey,
+                                    backgroundColor: 'rgba(0,0,0,0.04)',
+                                }
+                            }}
+                        >
+                            Cancel
+                        </Button>
+
+                        <Button
+                            onClick={handleConfirmDelete}
+                            variant="contained"
+                            sx={{
+                                flex: 1,
+                                backgroundColor: colors.black,
+                                color: colors.white,
+                                paddingTop: '10px',
+                                paddingBottom: '10px',
+                                borderRadius: '8px',
+                                textTransform: 'none',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                fontWeight: '600',
+                                '&:hover': {
+                                    backgroundColor: colors.darkgrey,
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                }
+                            }}
+                        >
+                            Delete
+                        </Button>
                     </Box>
                 </DialogActions>
             </Dialog>

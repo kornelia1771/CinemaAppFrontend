@@ -310,13 +310,25 @@ export default function AdminScreeningsPage() {
                 </Paper>
             </Container>
 
-            <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} fullWidth maxWidth="xs"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
+            <Dialog
+                open={addModalOpen}
+                onClose={() => setAddModalOpen(false)}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
                 {addModalOpen && (
                     <form onSubmit={handleConfirmAdd}>
-                        <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Add Screening</DialogTitle>
-                        <DialogContent
-                            sx={{display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important'}}>
+                        <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                            Add Screening
+                        </DialogTitle>
+
+                        <DialogContent sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '16px',
+                            pt: '12px !important'
+                        }}>
 
                             <FormControl fullWidth required>
                                 <InputLabel id="add-hall-select-label">Hall</InputLabel>
@@ -324,11 +336,15 @@ export default function AdminScreeningsPage() {
                                     labelId="add-hall-select-label"
                                     value={addForm.hallId ? Number(addForm.hallId) : ''}
                                     label="Hall"
-                                    onChange={(e) => setAddForm({...addForm, hallId: Number(e.target.value)})}
+                                    onChange={(e) => setAddForm({
+                                        ...addForm,
+                                        hallId: Number(e.target.value)
+                                    })}
                                 >
                                     {halls.map((hall) => (
-                                        <MenuItem key={hall.id}
-                                                  value={Number(hall.id)}>{hall.name} ({hall.totalSeats} seats)</MenuItem>
+                                        <MenuItem key={hall.id} value={Number(hall.id)}>
+                                            {hall.name} ({hall.totalSeats} seats)
+                                        </MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -340,7 +356,10 @@ export default function AdminScreeningsPage() {
                                 fullWidth
                                 InputLabelProps={{shrink: true}}
                                 value={addForm.screeningTime}
-                                onChange={(e) => setAddForm({...addForm, screeningTime: e.target.value})}
+                                onChange={(e) => setAddForm({
+                                    ...addForm,
+                                    screeningTime: e.target.value
+                                })}
                                 inputProps={{
                                     min: minDateTime,
                                     max: maxDateTime
@@ -354,41 +373,83 @@ export default function AdminScreeningsPage() {
                                 fullWidth
                                 inputProps={{min: 0, step: "0.01"}}
                                 value={addForm.ticketPrice}
-                                onChange={(e) => setAddForm({...addForm, ticketPrice: e.target.value as any})}
+                                onChange={(e) => setAddForm({
+                                    ...addForm,
+                                    ticketPrice: e.target.value as any
+                                })}
                             />
 
                         </DialogContent>
+
                         <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                             <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                                <Button onClick={() => setAddModalOpen(false)} variant="outlined" sx={{
-                                    flex: 1,
-                                    borderRadius: '8px',
-                                    textTransform: 'none',
-                                    borderColor: colors.black,
-                                    color: colors.black,
-                                    fontWeight: '600'
-                                }}>Cancel</Button>
-                                <Button type="submit" variant="contained" sx={{
-                                    flex: 1,
-                                    borderRadius: '8px',
-                                    textTransform: 'none',
-                                    backgroundColor: colors.black,
-                                    color: 'white',
-                                    fontWeight: '600'
-                                }}>Save</Button>
+                                <Button
+                                    onClick={() => setAddModalOpen(false)}
+                                    variant="outlined"
+                                    sx={{
+                                        flex: 1,
+                                        paddingTop: '10px',
+                                        paddingBottom: '10px',
+                                        borderRadius: '8px',
+                                        textTransform: 'none',
+                                        borderColor: colors.black,
+                                        color: colors.black,
+                                        fontWeight: '600',
+                                        '&:hover': {
+                                            borderColor: colors.darkgrey,
+                                            backgroundColor: 'rgba(0,0,0,0.04)',
+                                        }
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{
+                                        flex: 1,
+                                        backgroundColor: colors.black,
+                                        color: colors.white,
+                                        paddingTop: '10px',
+                                        paddingBottom: '10px',
+                                        borderRadius: '8px',
+                                        textTransform: 'none',
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                        fontWeight: '600',
+                                        '&:hover': {
+                                            backgroundColor: colors.darkgrey,
+                                            boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                        }
+                                    }}
+                                >
+                                    Save
+                                </Button>
                             </Box>
                         </DialogActions>
                     </form>
                 )}
             </Dialog>
 
-            <Dialog open={editModalOpen} onClose={() => setEditModalOpen(false)} fullWidth maxWidth="xs"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
+            <Dialog
+                open={editModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
                 {editModalOpen && (
                     <form onSubmit={handleConfirmEdit}>
-                        <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Edit Screening</DialogTitle>
-                        <DialogContent
-                            sx={{display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important'}}>
+                        <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                            Edit Screening
+                        </DialogTitle>
+
+                        <DialogContent sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '16px',
+                            pt: '12px !important'
+                        }}>
 
                             <FormControl fullWidth required>
                                 <InputLabel id="edit-hall-select-label">Hall</InputLabel>
@@ -396,11 +457,15 @@ export default function AdminScreeningsPage() {
                                     labelId="edit-hall-select-label"
                                     value={editForm.hallId ? Number(editForm.hallId) : ''}
                                     label="Hall"
-                                    onChange={(e) => setEditForm({...editForm, hallId: Number(e.target.value)})}
+                                    onChange={(e) => setEditForm({
+                                        ...editForm,
+                                        hallId: Number(e.target.value)
+                                    })}
                                 >
                                     {halls.map((hall) => (
-                                        <MenuItem key={hall.id}
-                                                  value={Number(hall.id)}>{hall.name} ({hall.totalSeats} seats)</MenuItem>
+                                        <MenuItem key={hall.id} value={Number(hall.id)}>
+                                            {hall.name} ({hall.totalSeats} seats)
+                                        </MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -412,7 +477,10 @@ export default function AdminScreeningsPage() {
                                 fullWidth
                                 InputLabelProps={{shrink: true}}
                                 value={editForm.screeningTime}
-                                onChange={(e) => setEditForm({...editForm, screeningTime: e.target.value})}
+                                onChange={(e) => setEditForm({
+                                    ...editForm,
+                                    screeningTime: e.target.value
+                                })}
                                 inputProps={{
                                     min: minDateTime,
                                     max: maxDateTime
@@ -426,62 +494,131 @@ export default function AdminScreeningsPage() {
                                 fullWidth
                                 inputProps={{min: 0, step: "0.01"}}
                                 value={editForm.ticketPrice}
-                                onChange={(e) => setEditForm({...editForm, ticketPrice: e.target.value as any})}
+                                onChange={(e) => setEditForm({
+                                    ...editForm,
+                                    ticketPrice: e.target.value as any
+                                })}
                             />
 
                         </DialogContent>
+
                         <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                             <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                                <Button onClick={() => setEditModalOpen(false)} variant="outlined" sx={{
-                                    flex: 1,
-                                    borderRadius: '8px',
-                                    textTransform: 'none',
-                                    borderColor: colors.black,
-                                    color: colors.black,
-                                    fontWeight: '600'
-                                }}>Cancel</Button>
-                                <Button type="submit" variant="contained" sx={{
-                                    flex: 1,
-                                    borderRadius: '8px',
-                                    textTransform: 'none',
-                                    backgroundColor: colors.black,
-                                    color: 'white',
-                                    fontWeight: '600'
-                                }}>Save</Button>
+                                <Button
+                                    onClick={() => setEditModalOpen(false)}
+                                    variant="outlined"
+                                    sx={{
+                                        flex: 1,
+                                        paddingTop: '10px',
+                                        paddingBottom: '10px',
+                                        borderRadius: '8px',
+                                        textTransform: 'none',
+                                        borderColor: colors.black,
+                                        color: colors.black,
+                                        fontWeight: '600',
+                                        '&:hover': {
+                                            borderColor: colors.darkgrey,
+                                            backgroundColor: 'rgba(0,0,0,0.04)',
+                                        }
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{
+                                        flex: 1,
+                                        backgroundColor: colors.black,
+                                        color: colors.white,
+                                        paddingTop: '10px',
+                                        paddingBottom: '10px',
+                                        borderRadius: '8px',
+                                        textTransform: 'none',
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                        fontWeight: '600',
+                                        '&:hover': {
+                                            backgroundColor: colors.darkgrey,
+                                            boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                        }
+                                    }}
+                                >
+                                    Save
+                                </Button>
                             </Box>
                         </DialogActions>
                     </form>
                 )}
             </Dialog>
 
-            <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} fullWidth maxWidth="xs"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
-                <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Delete Screening</DialogTitle>
+            <Dialog
+                open={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
+                <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                    Delete Screening
+                </DialogTitle>
+
                 <DialogContent sx={{pt: '12px !important'}}>
-                    <Typography variant="body1" sx={{color: colors.black}}>
+                    <Typography sx={{color: colors.black}}>
                         Are you sure you want to delete the screening scheduled
-                        for <strong>{screeningToDelete ? formatDateTime(screeningToDelete.screeningTime) : ''}</strong>?
+                        for{" "}
+                        <strong>
+                            {screeningToDelete
+                                ? formatDateTime(screeningToDelete.screeningTime)
+                                : ''}
+                        </strong>?
                     </Typography>
                 </DialogContent>
+
                 <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                     <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                        <Button onClick={() => setDeleteModalOpen(false)} variant="outlined" sx={{
-                            flex: 1,
-                            borderRadius: '8px',
-                            textTransform: 'none',
-                            borderColor: colors.black,
-                            color: colors.black,
-                            fontWeight: '600'
-                        }}>Cancel</Button>
-                        <Button onClick={handleConfirmDelete} variant="contained" sx={{
-                            flex: 1,
-                            borderRadius: '8px',
-                            textTransform: 'none',
-                            backgroundColor: colors.black,
-                            color: 'white',
-                            fontWeight: '600',
-                            '&:hover': {backgroundColor: colors.darkgrey}
-                        }}>Delete</Button>
+                        <Button
+                            onClick={() => setDeleteModalOpen(false)}
+                            variant="outlined"
+                            sx={{
+                                flex: 1,
+                                paddingTop: '10px',
+                                paddingBottom: '10px',
+                                borderRadius: '8px',
+                                textTransform: 'none',
+                                borderColor: colors.black,
+                                color: colors.black,
+                                fontWeight: '600',
+                                '&:hover': {
+                                    borderColor: colors.darkgrey,
+                                    backgroundColor: 'rgba(0,0,0,0.04)',
+                                }
+                            }}
+                        >
+                            Cancel
+                        </Button>
+
+                        <Button
+                            onClick={handleConfirmDelete}
+                            variant="contained"
+                            sx={{
+                                flex: 1,
+                                backgroundColor: colors.black,
+                                color: colors.white,
+                                paddingTop: '10px',
+                                paddingBottom: '10px',
+                                borderRadius: '8px',
+                                textTransform: 'none',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                fontWeight: '600',
+                                '&:hover': {
+                                    backgroundColor: colors.darkgrey,
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                }
+                            }}
+                        >
+                            Delete
+                        </Button>
                     </Box>
                 </DialogActions>
             </Dialog>

@@ -217,11 +217,24 @@ export default function AdminHomePage() {
                 </Paper>
             </Container>
 
-            <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} fullWidth maxWidth="xs"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
+            <Dialog
+                open={addModalOpen}
+                onClose={() => setAddModalOpen(false)}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
                 <form onSubmit={handleConfirmAdd}>
-                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Add New User</DialogTitle>
-                    <DialogContent sx={{display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important'}}>
+                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                        Add New User
+                    </DialogTitle>
+
+                    <DialogContent sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        pt: '12px !important'
+                    }}>
                         <TextField label="First Name" required fullWidth value={addForm.firstName}
                                    onChange={(e) => setAddForm({...addForm, firstName: e.target.value})}/>
                         <TextField label="Last Name" required fullWidth value={addForm.lastName}
@@ -233,46 +246,90 @@ export default function AdminHomePage() {
 
                         <FormControl fullWidth>
                             <InputLabel>Roles</InputLabel>
-                            <Select multiple value={addForm.roles || []} label="Roles" onChange={(e) => setAddForm({
-                                ...addForm,
-                                roles: typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value
-                            })}>
+                            <Select
+                                multiple
+                                value={addForm.roles || []}
+                                label="Roles"
+                                onChange={(e) => setAddForm({
+                                    ...addForm,
+                                    roles: typeof e.target.value === 'string'
+                                        ? e.target.value.split(',')
+                                        : e.target.value
+                                })}
+                            >
                                 <MenuItem value="CLIENT">CLIENT</MenuItem>
                                 <MenuItem value="ADMIN">ADMIN</MenuItem>
                             </Select>
                         </FormControl>
-
                     </DialogContent>
+
                     <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                         <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                            <Button onClick={() => setAddModalOpen(false)} variant="outlined" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                borderColor: colors.black,
-                                color: colors.black,
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: 'rgba(0,0,0,0.04)'}
-                            }}>Cancel</Button>
-                            <Button type="submit" variant="contained" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                backgroundColor: colors.black,
-                                color: 'white',
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: colors.darkgrey}
-                            }}>Save</Button>
+                            <Button
+                                onClick={() => setAddModalOpen(false)}
+                                variant="outlined"
+                                sx={{
+                                    flex: 1,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    borderColor: colors.black,
+                                    color: colors.black,
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        borderColor: colors.darkgrey,
+                                        backgroundColor: 'rgba(0,0,0,0.04)',
+                                    }
+                                }}
+                            >
+                                Cancel
+                            </Button>
+
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{
+                                    flex: 1,
+                                    backgroundColor: colors.black,
+                                    color: colors.white,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        backgroundColor: colors.darkgrey,
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    }
+                                }}
+                            >
+                                Save
+                            </Button>
                         </Box>
                     </DialogActions>
                 </form>
             </Dialog>
 
-            <Dialog open={editModalOpen} onClose={() => setEditModalOpen(false)} fullWidth maxWidth="xs"
-                    PaperProps={{sx: {borderRadius: '12px', p: 1}}}>
+            <Dialog
+                open={editModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                fullWidth
+                maxWidth="xs"
+                PaperProps={{sx: {borderRadius: '12px', p: 1}}}
+            >
                 <form onSubmit={handleConfirmEdit}>
-                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>Edit User</DialogTitle>
-                    <DialogContent sx={{display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important'}}>
+                    <DialogTitle sx={{fontWeight: '700', color: colors.black}}>
+                        Edit User
+                    </DialogTitle>
+
+                    <DialogContent sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        pt: '12px !important'
+                    }}>
                         <TextField label="First Name" required fullWidth value={editForm.firstName}
                                    onChange={(e) => setEditForm({...editForm, firstName: e.target.value})}/>
                         <TextField label="Last Name" required fullWidth value={editForm.lastName}
@@ -285,40 +342,81 @@ export default function AdminHomePage() {
 
                         <FormControl fullWidth>
                             <InputLabel>Roles</InputLabel>
-                            <Select multiple value={editForm.roles || []} label="Roles" onChange={(e) => setEditForm({
-                                ...editForm,
-                                roles: typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value
-                            })}>
+                            <Select
+                                multiple
+                                value={editForm.roles || []}
+                                label="Roles"
+                                onChange={(e) => setEditForm({
+                                    ...editForm,
+                                    roles: typeof e.target.value === 'string'
+                                        ? e.target.value.split(',')
+                                        : e.target.value
+                                })}
+                            >
                                 <MenuItem value="CLIENT">CLIENT</MenuItem>
                                 <MenuItem value="ADMIN">ADMIN</MenuItem>
                             </Select>
                         </FormControl>
 
-                        <FormControlLabel control={<Switch checked={editForm.enabled} onChange={(e) => setEditForm({
-                            ...editForm,
-                            enabled: e.target.checked
-                        })} color="primary"/>} label="Account Enabled"/>
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={editForm.enabled}
+                                    onChange={(e) => setEditForm({
+                                        ...editForm,
+                                        enabled: e.target.checked
+                                    })}
+                                    color="primary"
+                                />
+                            }
+                            label="Account Enabled"
+                        />
                     </DialogContent>
+
                     <DialogActions sx={{px: 3, pb: 2, mt: 1}}>
                         <Box sx={{display: 'flex', width: '100%', gap: '12px'}}>
-                            <Button onClick={() => setEditModalOpen(false)} variant="outlined" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                borderColor: colors.black,
-                                color: colors.black,
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: 'rgba(0,0,0,0.04)'}
-                            }}>Cancel</Button>
-                            <Button type="submit" variant="contained" sx={{
-                                flex: 1,
-                                borderRadius: '8px',
-                                textTransform: 'none',
-                                backgroundColor: colors.black,
-                                color: 'white',
-                                fontWeight: '600',
-                                '&:hover': {backgroundColor: colors.darkgrey}
-                            }}>Save</Button>
+                            <Button
+                                onClick={() => setEditModalOpen(false)}
+                                variant="outlined"
+                                sx={{
+                                    flex: 1,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    borderColor: colors.black,
+                                    color: colors.black,
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        borderColor: colors.darkgrey,
+                                        backgroundColor: 'rgba(0,0,0,0.04)',
+                                    }
+                                }}
+                            >
+                                Cancel
+                            </Button>
+
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{
+                                    flex: 1,
+                                    backgroundColor: colors.black,
+                                    color: colors.white,
+                                    paddingTop: '10px',
+                                    paddingBottom: '10px',
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    fontWeight: '600',
+                                    '&:hover': {
+                                        backgroundColor: colors.darkgrey,
+                                        boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+                                    }
+                                }}
+                            >
+                                Save
+                            </Button>
                         </Box>
                     </DialogActions>
                 </form>
