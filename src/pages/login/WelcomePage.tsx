@@ -1,8 +1,8 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, Typography, Paper, Container } from '@mui/material';
-import { TvMinimalPlay } from 'lucide-react';
-import { colors } from '../../constants/theme';
+import {useNavigate} from 'react-router-dom';
+import {Box, Button, Typography, Paper, Container} from '@mui/material';
+import {TvMinimalPlay} from 'lucide-react';
+import {colors} from '../../constants/theme';
 import {
     LoginSafeAreaContainer, LoginCenterArea, LoginFormWrapper,
     LoginInnerContent, LoginTitleRow, LoginTitleText,
@@ -24,7 +24,7 @@ export default function WelcomePage() {
                     <Box sx={LoginInnerContent()}>
 
                         <Box sx={LoginTitleRow()}>
-                            <TvMinimalPlay size={34} color={colors.black} />
+                            <TvMinimalPlay size={34} color={colors.black}/>
                             <Typography
                                 variant="h4"
                                 component="h1"

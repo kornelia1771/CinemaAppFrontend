@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Container, Paper, Typography, Button, CircularProgress, IconButton } from '@mui/material';
-import { Clock, ArrowLeft, Calendar } from 'lucide-react';
-import { colors, fontSizes } from '../../constants/theme';
+import React, {useEffect, useState, useRef} from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
+import {Box, Container, Paper, Typography, Button, CircularProgress, IconButton} from '@mui/material';
+import {Clock, ArrowLeft, Calendar} from 'lucide-react';
+import {colors, fontSizes} from '../../constants/theme';
 import Header from '../../components/Header';
-import { MovieApi, MovieDetailsResponse, ScreeningResponse } from '../../api/user/MovieApi';
+import {MovieApi, MovieDetailsResponse, ScreeningResponse} from '../../api/user/MovieApi';
 
 interface GroupedScreenings {
     [dateKey: string]: {
@@ -13,23 +13,18 @@ interface GroupedScreenings {
     };
 }
 
-// Funkcja pomocnicza: Bezpiecznie zamienia format z backendu (String lub Tablica numerów) na obiekt Date
 const parseBackendDate = (screeningTime: any): Date => {
     if (!screeningTime) return new Date();
 
-    // Jeśli backend wysłał tablicę [2026, 6, 20, 14, 0] zamiast Stringa
     if (Array.isArray(screeningTime)) {
         const [year, month, day, hour, minute, second] = screeningTime;
-        // W JS miesiące są indeksowane od 0 (styczeń = 0, czerwiec = 5)
         return new Date(year, month - 1, day, hour || 0, minute || 0, second || 0);
     }
-
-    // Jeśli to jest prawidłowy String "2026-06-20T14:00:00"
     return new Date(screeningTime);
 };
 
 export default function MovieDetailsPage() {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const navigate = useNavigate();
     const dateInputRef = useRef<HTMLInputElement>(null);
 
@@ -77,9 +72,9 @@ export default function MovieDetailsPage() {
             const dateKey = `${year}-${month}-${day}`;
 
             if (!groups[dateKey]) {
-                const weekday = dateObj.toLocaleDateString(locale, { weekday: 'short' });
+                const weekday = dateObj.toLocaleDateString(locale, {weekday: 'short'});
                 const dayNum = dateObj.getDate();
-                const monthName = dateObj.toLocaleDateString(locale, { month: 'short' });
+                const monthName = dateObj.toLocaleDateString(locale, {month: 'short'});
 
                 groups[dateKey] = {
                     label: `${weekday}, ${dayNum} ${monthName}`,
@@ -123,17 +118,23 @@ export default function MovieDetailsPage() {
 
     if (loading) {
         return (
-            <Box sx={{ backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <CircularProgress color="inherit" sx={{ color: colors.black }} />
+            <Box sx={{
+                backgroundColor: colors.lightgrey,
+                minHeight: '100vh',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <CircularProgress color="inherit" sx={{color: colors.black}}/>
             </Box>
         );
     }
 
     if (error || !movieData) {
         return (
-            <Box sx={{ backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-                <Header title="CinemaApp" onSignOut={handleSignOut} />
-                <Container sx={{ mt: 4, textAlign: 'center' }}>
+            <Box sx={{backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+                <Header title="CinemaApp" onSignOut={handleSignOut}/>
+                <Container sx={{mt: 4, textAlign: 'center'}}>
                     <Typography variant="h6" color="error">{error || "Movie not found."}</Typography>
                 </Container>
             </Box>
@@ -147,11 +148,10 @@ export default function MovieDetailsPage() {
     const maxDate = availableDates.length > 0 ? availableDates[availableDates.length - 1] : '';
 
     return (
-        <Box sx={{ backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <Header title="CinemaApp" onSignOut={handleSignOut} />
+        <Box sx={{backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+            <Header title="CinemaApp" onSignOut={handleSignOut}/>
 
-            <Container maxWidth="md" sx={{ mt: 6, mb: 4, flexGrow: 1 }}>
-                {/*<Paper elevation={3} sx={{ p: 4, borderRadius: '12px', position: 'relative' }}>*/}
+            <Container maxWidth="md" sx={{mt: 6, mb: 4, flexGrow: 1}}>
                 <Paper
                     elevation={3}
                     sx={{
@@ -169,17 +169,23 @@ export default function MovieDetailsPage() {
                             padding: '6px',
                             color: colors.black,
                             zIndex: 10,
-                            '&:hover': { backgroundColor: colors.lightgrey }
+                            '&:hover': {backgroundColor: colors.lightgrey}
                         }}
                     >
-                        <ArrowLeft size={20} />
+                        <ArrowLeft size={20}/>
                     </IconButton>
 
-                    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: '32px', pt: { xs: 6, md: 4 }, mb: 4 }}>
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: {xs: 'column', md: 'row'},
+                        gap: '32px',
+                        pt: {xs: 6, md: 4},
+                        mb: 4
+                    }}>
 
                         <Box
                             sx={{
-                                width: { xs: '100%', md: '300px' },
+                                width: {xs: '100%', md: '300px'},
                                 height: '420px',
                                 borderRadius: '8px',
                                 overflow: 'hidden',
@@ -189,48 +195,53 @@ export default function MovieDetailsPage() {
                             }}
                         >
                             {movieData.imageUrl ? (
-                                <img src={movieData.imageUrl} alt={movieData.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <img src={movieData.imageUrl} alt={movieData.title}
+                                     style={{width: '100%', height: '100%', objectFit: 'cover'}}/>
                             ) : (
-                                <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                                    <Typography variant="body2" sx={{ color: colors.darkgrey }}>No image</Typography>
+                                <Box sx={{
+                                    display: 'flex',
+                                    height: '100%',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <Typography variant="body2" sx={{color: colors.darkgrey}}>No image</Typography>
                                 </Box>
                             )}
                         </Box>
 
-                        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, textAlign: 'left' }}>
-                            <Typography variant="h4" component="h1" sx={{ fontWeight: '700', color: colors.black, mb: 1 }}>
+                        <Box sx={{display: 'flex', flexDirection: 'column', flexGrow: 1, textAlign: 'left'}}>
+                            <Typography variant="h4" component="h1"
+                                        sx={{fontWeight: '700', color: colors.black, mb: 1}}>
                                 {movieData.title}
                             </Typography>
 
-                            <Box sx={{ display: 'flex', gap: '16px', mb: 3, mt: 1 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <Clock size={16} color={colors.darkgrey} />
-                                    <Typography variant="body2" sx={{ color: colors.darkgrey, fontWeight: '500' }}>
+                            <Box sx={{display: 'flex', gap: '16px', mb: 3, mt: 1}}>
+                                <Box sx={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+                                    <Clock size={16} color={colors.darkgrey}/>
+                                    <Typography variant="body2" sx={{color: colors.darkgrey, fontWeight: '500'}}>
                                         {movieData.duration} min
                                     </Typography>
                                 </Box>
                             </Box>
 
-                            <Typography variant="subtitle1" sx={{ fontWeight: '700', color: colors.black, mb: 0.5 }}>
+                            <Typography variant="subtitle1" sx={{fontWeight: '700', color: colors.black, mb: 0.5}}>
                                 Description
                             </Typography>
-                            <Typography variant="body1" sx={{ color: '#444', lineHeight: 1.6 }}>
+                            <Typography variant="body1" sx={{color: '#444', lineHeight: 1.6}}>
                                 {movieData.description || "No description available."}
                             </Typography>
                         </Box>
                     </Box>
 
-                    <Box sx={{ borderTop: '1px solid rgba(0, 0, 0, 0.08)', pt: 3, textAlign: 'left' }}>
-
-                        {/* WYBÓR DATY Z IKONĄ KALENDARZA */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', mb: 1.5 }}>
-                            <Calendar size={18} color={colors.black} />
-                            <Typography variant="subtitle1" sx={{ fontWeight: '700', color: colors.black }}>
+                    <Box sx={{borderTop: '1px solid rgba(0, 0, 0, 0.08)', pt: 3, textAlign: 'left'}}>
+                        <Box sx={{display: 'flex', alignItems: 'center', gap: '8px', mb: 1.5}}>
+                            <Calendar size={18} color={colors.black}/>
+                            <Typography variant="subtitle1" sx={{fontWeight: '700', color: colors.black}}>
                                 Select Date
                             </Typography>
                         </Box>
 
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', mb: 4, flexWrap: 'wrap' }}>
+                        <Box sx={{display: 'flex', alignItems: 'center', gap: '10px', mb: 4, flexWrap: 'wrap'}}>
                             {availableDates.map((dateKey) => {
                                 const isSelected = dateKey === selectedDate;
                                 return (
@@ -259,7 +270,7 @@ export default function MovieDetailsPage() {
                             })}
 
                             {availableDates.length > 0 && (
-                                <Box sx={{ position: 'relative' }}>
+                                <Box sx={{position: 'relative'}}>
                                     <IconButton
                                         onClick={() => dateInputRef.current?.showPicker()}
                                         sx={{
@@ -268,10 +279,10 @@ export default function MovieDetailsPage() {
                                             padding: '8px',
                                             color: colors.black,
                                             backgroundColor: 'transparent',
-                                            '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' }
+                                            '&:hover': {backgroundColor: 'rgba(0, 0, 0, 0.04)'}
                                         }}
                                     >
-                                        <Calendar size={20} />
+                                        <Calendar size={20}/>
                                     </IconButton>
 
                                     <input
@@ -294,16 +305,14 @@ export default function MovieDetailsPage() {
                                 </Box>
                             )}
                         </Box>
-
-                        {/* WYBÓR GODZINY Z IKONĄ ZEGARA */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', mb: 1.5 }}>
-                            <Clock size={18} color={colors.black} />
-                            <Typography variant="subtitle1" sx={{ fontWeight: '700', color: colors.black }}>
+                        <Box sx={{display: 'flex', alignItems: 'center', gap: '8px', mb: 1.5}}>
+                            <Clock size={18} color={colors.black}/>
+                            <Typography variant="subtitle1" sx={{fontWeight: '700', color: colors.black}}>
                                 Available Showtimes
                             </Typography>
                         </Box>
 
-                        <Box sx={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                        <Box sx={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
                             {currentScreenings.length > 0 ? (
                                 currentScreenings.map((screening) => {
                                     const dateObj = parseBackendDate(screening.screeningTime);
@@ -318,11 +327,9 @@ export default function MovieDetailsPage() {
                                         <Button
                                             key={screening.id}
                                             variant="contained"
-                                            // onClick={() => navigate(`/booking/${movieData.id}?screeningId=${screening.id}&date=${selectedDate}&time=${timeLabel}`)}
                                             onClick={() => navigate(`/booking/${movieData.id}?screeningId=${screening.id}&date=${selectedDate}&time=${timeLabel}`)}
                                             sx={{
                                                 backgroundColor: colors.black,
-                                                // ZAKTUALIZOWANO: Taki sam padding jak buttony z datą ('8px')
                                                 padding: '8px 24px',
                                                 borderRadius: '8px',
                                                 textTransform: 'none',
@@ -341,7 +348,7 @@ export default function MovieDetailsPage() {
                                     );
                                 })
                             ) : (
-                                <Typography variant="body2" sx={{ color: colors.darkgrey }}>
+                                <Typography variant="body2" sx={{color: colors.darkgrey}}>
                                     No screenings scheduled for this day.
                                 </Typography>
                             )}

@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Container, Paper, Typography, CircularProgress, Alert } from '@mui/material';
-import { Ticket } from 'lucide-react';
-import { colors } from '../../constants/theme';
-import { decodeJWT } from '../../helper/LoginHelper';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {Box, Container, Paper, Typography, CircularProgress, Alert} from '@mui/material';
+import {Ticket} from 'lucide-react';
+import {colors} from '../../constants/theme';
+import {decodeJWT} from '../../helper/LoginHelper';
 import Header from '../../components/Header';
-import {MovieApi, MovieResponse} from '../../api/user/MovieApi'; // Import nowo utworzonego API
+import {MovieApi, MovieResponse} from '../../api/user/MovieApi';
 
 
 export default function HomePage() {
     const navigate = useNavigate();
     const [userFirstName, setUserFirstName] = useState('');
-
-    // Stany dla danych z backendu
     const [movies, setMovies] = useState<MovieResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [apiError, setApiError] = useState<string | null>(null);
@@ -29,7 +27,6 @@ export default function HomePage() {
             setUserFirstName(claims.firstName);
         }
 
-        // Pobieranie filmów z backendu
         const fetchMoviesData = async () => {
             try {
                 setLoading(true);
@@ -52,33 +49,29 @@ export default function HomePage() {
     };
 
     return (
-        <Box sx={{ backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <Header title="CinemaApp" onSignOut={handleSignOut} />
+        <Box sx={{backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+            <Header title="CinemaApp" onSignOut={handleSignOut}/>
 
-            <Container maxWidth="md" sx={{ mt: 6, mb: 4, flexGrow: 1 }}>
-                <Paper elevation={3} sx={{ p: 4, borderRadius: '12px', textAlign: 'center' }}>
-                    <Typography variant="h5" component="h1" sx={{ fontWeight: '700', marginBottom: '8px', color: colors.black }}>
+            <Container maxWidth="md" sx={{mt: 6, mb: 4, flexGrow: 1}}>
+                <Paper elevation={3} sx={{p: 4, borderRadius: '12px', textAlign: 'center'}}>
+                    <Typography variant="h5" component="h1"
+                                sx={{fontWeight: '700', marginBottom: '8px', color: colors.black}}>
                         Welcome in CinemaApp!
                     </Typography>
-                    <Typography variant="body1" sx={{ color: colors.darkgrey, marginBottom: '32px' }}>
+                    <Typography variant="body1" sx={{color: colors.darkgrey, marginBottom: '32px'}}>
                         Choose your movie.
                     </Typography>
 
-                    {/* Stan ładowania danych */}
                     {loading && (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-                            <CircularProgress color="inherit" sx={{ color: colors.black }} />
+                        <Box sx={{display: 'flex', justifyContent: 'center', my: 4}}>
+                            <CircularProgress color="inherit" sx={{color: colors.black}}/>
                         </Box>
                     )}
-
-                    {/* Stan wystąpienia błędu z backendu */}
                     {apiError && (
-                        <Alert severity="error" sx={{ mb: 4, textAlign: 'left' }}>
+                        <Alert severity="error" sx={{mb: 4, textAlign: 'left'}}>
                             {apiError}
                         </Alert>
                     )}
-
-                    {/* Siatka z filmami pobranymi z bazy danych */}
                     {!loading && !apiError && (
                         <Box
                             sx={{
@@ -112,9 +105,8 @@ export default function HomePage() {
                                         }
                                     }}
                                 >
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                                    <Box sx={{display: 'flex', flexDirection: 'column', textAlign: 'left'}}>
 
-                                        {/* Plakat: Jeśli backend zwraca url, renderujemy obrazek, w przeciwnym wypadku szary boks */}
                                         <Box
                                             className="movie-poster"
                                             sx={{
@@ -134,16 +126,15 @@ export default function HomePage() {
                                                 <img
                                                     src={movie.imageUrl}
                                                     alt={movie.title}
-                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                    style={{width: '100%', height: '100%', objectFit: 'cover'}}
                                                 />
                                             ) : (
-                                                <Typography variant="body2" sx={{ fontWeight: '600', color: '#b0b0b0' }}>
+                                                <Typography variant="body2" sx={{fontWeight: '600', color: '#b0b0b0'}}>
                                                     No Image
                                                 </Typography>
                                             )}
                                         </Box>
 
-                                        {/* Tytuł filmu z bazy */}
                                         <Typography
                                             variant="subtitle1"
                                             sx={{
@@ -158,25 +149,6 @@ export default function HomePage() {
                                         >
                                             {movie.title}
                                         </Typography>
-
-                                        {/* Czas trwania filmu pobrany ze Spring Boota */}
-                                        {/*<Typography variant="caption" sx={{ color: colors.darkgrey, mb: 1, px: '2px' }}>*/}
-                                        {/*    Duration: {movie.duration} min*/}
-                                        {/*</Typography>*/}
-
-                                        {/* Przykładowa cena (ponieważ encja filmu nie zawiera ceny w bazie) */}
-                                        {/*<Typography*/}
-                                        {/*    variant="body2"*/}
-                                        {/*    sx={{*/}
-                                        {/*        fontWeight: '600',*/}
-                                        {/*        color: colors.darkgrey,*/}
-                                        {/*        textAlign: 'right',*/}
-                                        {/*        marginBottom: '14px',*/}
-                                        {/*        paddingRight: '2px'*/}
-                                        {/*    }}*/}
-                                        {/*>*/}
-                                        {/*    /!*25.00 ZŁ*!/*/}
-                                        {/*</Typography>*/}
                                     </Box>
 
                                     <Box
@@ -196,17 +168,15 @@ export default function HomePage() {
                                             pointerEvents: 'none'
                                         }}
                                     >
-                                        <Ticket size={14} />
+                                        <Ticket size={14}/>
                                         <span>Buy Ticket</span>
                                     </Box>
                                 </Box>
                             ))}
                         </Box>
                     )}
-
-                    {/* Obsługa sytuacji, gdy baza jest pusta */}
                     {!loading && !apiError && movies.length === 0 && (
-                        <Typography variant="body1" sx={{ color: colors.darkgrey, my: 4 }}>
+                        <Typography variant="body1" sx={{color: colors.darkgrey, my: 4}}>
                             No movies available at the moment.
                         </Typography>
                     )}

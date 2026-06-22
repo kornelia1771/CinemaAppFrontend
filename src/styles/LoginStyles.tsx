@@ -1,4 +1,4 @@
-import { colors, fontSizes } from '../constants/theme';
+import {colors, fontSizes} from '../constants/theme';
 
 export const LoginSafeAreaContainer = () => ({
     display: 'flex',
@@ -79,13 +79,12 @@ export const LoginButtonContainer = () => ({
     marginTop: '12px',
 });
 
-// ZMNIEJSZONO: Button podstawowy
 export const LoginButton = () => ({
     backgroundColor: colors.black,
-    paddingTop: '10px',        // Zmniejszono z 15px
-    paddingBottom: '10px',     // Zmniejszono z 15px
-    paddingLeft: '24px',        // Dostosowano proporcjonalnie z 30px
-    paddingRight: '24px',       // Dostosowano proporcjonalnie z 30px
+    paddingTop: '10px',
+    paddingBottom: '10px',
+    paddingLeft: '24px',
+    paddingRight: '24px',
     borderRadius: '8px',
     display: 'flex',
     alignItems: 'center',
@@ -152,15 +151,14 @@ export const LoginInputLabel = () => ({
     alignSelf: 'flex-start',
 });
 
-// ZMNIEJSZONO: Wysokość zwykłego inputu poprzez mniejszy padding pionowy
 export const LoginInput = () => ({
     width: '100%',
     backgroundColor: colors.lightgrey,
     borderRadius: '8px',
     paddingLeft: '15px',
     paddingRight: '15px',
-    paddingTop: '8px',          // Zmniejszono z 12px
-    paddingBottom: '8px',       // Zmniejszono z 12px
+    paddingTop: '8px',
+    paddingBottom: '8px',
     marginBottom: '15px',
     fontSize: fontSizes.medium,
     color: colors.black,
@@ -173,24 +171,22 @@ export const LoginPasswordInputWrapper = () => ({
     marginBottom: '4px',
 });
 
-// ZMNIEJSZONO: Wysokość inputu hasła poprzez mniejszy padding pionowy
 export const LoginPasswordInputField = () => ({
     width: '100%',
     backgroundColor: colors.lightgrey,
     borderRadius: '8px',
     paddingLeft: '15px',
     paddingRight: '44px',
-    paddingTop: '8px',          // Zmniejszono z 12px
-    paddingBottom: '8px',       // Zmniejszono z 12px
+    paddingTop: '8px',
+    paddingBottom: '8px',
     fontSize: fontSizes.medium,
     color: colors.black,
     boxSizing: 'border-box',
 });
 
-// DOPASOWANO: Pozycja absolutna kontenera ikony oka, aby idealnie pasowała do niższego pola
 export const LoginPasswordToggleAbsolute = () => ({
     position: 'absolute',
-    right: '8px',               // Przesunięto delikatnie bliżej krawędzi (z 12px) dla lepszego wyglądu przy mniejszej skali
+    right: '8px',
     top: 0,
     bottom: 0,
     display: 'flex',
@@ -225,13 +221,12 @@ export const LoginValidationError = () => ({
     textAlign: 'center',
 });
 
-// ZMNIEJSZONO: Główny przycisk logowania/rejestracji
 export const LoginSignInButton = () => ({
     backgroundColor: colors.black,
-    paddingTop: '10px',        // Zmniejszono z 15px
-    paddingBottom: '10px',     // Zmniejszono z 15px
-    paddingLeft: '24px',        // Dostosowano proporcjonalnie z 30px
-    paddingRight: '24px',       // Dostosowano proporcjonalnie z 30px
+    paddingTop: '10px',
+    paddingBottom: '10px',
+    paddingLeft: '24px',
+    paddingRight: '24px',
     borderRadius: '8px',
     display: 'flex',
     alignItems: 'center',

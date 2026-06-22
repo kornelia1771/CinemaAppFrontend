@@ -1,4 +1,4 @@
-import { BASE_URL } from "../ApiHttp";
+import {BASE_URL} from "../ApiHttp";
 
 export interface TicketReservationRequest {
     movieId: number;
@@ -27,7 +27,7 @@ export const TicketApi = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             },
             body: JSON.stringify(request)
         });
@@ -47,7 +47,7 @@ export const TicketApi = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 
@@ -66,7 +66,7 @@ export const TicketApi = {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 
@@ -79,22 +79,20 @@ export const TicketApi = {
         return data;
     },
 
-    // wewnątrz TicketApi
     downloadTicketPdf: async (ticketId: number) => {
         const token = localStorage.getItem("token");
         const response = await fetch(`${BASE_URL}/tickets/${ticketId}/pdf`, {
             method: "GET",
             headers: {
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: "Failed to download PDF" }));
+            const errorData = await response.json().catch(() => ({message: "Failed to download PDF"}));
             throw new Error(errorData.message || "Failed to download PDF");
         }
 
-        // Pobranie pliku jako Blob
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -112,7 +110,7 @@ export const TicketApi = {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 
@@ -124,7 +122,4 @@ export const TicketApi = {
 
         return data;
     },
-
-
-
 };

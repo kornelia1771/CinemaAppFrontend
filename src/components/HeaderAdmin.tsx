@@ -1,14 +1,12 @@
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import {Box, Typography, Button} from '@mui/material';
 import {TvMinimalPlay, LogOut, Users, Film, Ticket, Building2} from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { colors } from '../constants/theme';
+import {useNavigate, useLocation} from 'react-router-dom';
+import {colors} from '../constants/theme';
 import {
-    HeaderContainer,
-    HeaderLogoRow,
-    HeaderLogoText
+    HeaderContainer, HeaderLogoRow, HeaderLogoText
 } from '../styles/ComponentsStyles';
-import { HeaderDefaultTitle } from '../strings/loginStrings';
+import {HeaderDefaultTitle} from '../strings/loginStrings';
 
 type HeaderAdminProps = {
     title?: string;
@@ -52,34 +50,29 @@ const HeaderAdmin: React.FC<HeaderAdminProps> = ({
                 padding: '10px 24px',
             }}
         >
-            {/* Logo */}
             <Box
-                sx={{ ...HeaderLogoRow(), cursor: 'pointer' }}
+                sx={{...HeaderLogoRow(), cursor: 'pointer'}}
                 onClick={() => navigate('/home')}
             >
-                <TvMinimalPlay size={24} color={colors.black} />
+                <TvMinimalPlay size={24} color={colors.black}/>
                 <Typography sx={HeaderLogoText()}>
                     {title}
                 </Typography>
             </Box>
 
-            {/* Navigation */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Box sx={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                 <Button
                     variant="text"
-                    startIcon={<Users size={18} />}
+                    startIcon={<Users size={18}/>}
                     onClick={() => navigate('/adminHome')}
                     sx={getButtonStyles('/adminHome')}
                 >
                     Users
                 </Button>
 
-
                 <Button
                     variant="text"
-                    startIcon={<Building2 size={18} />}
-                    // onClick={() => navigate('/halls')}
-                    // sx={getButtonStyles('/adminHalls')}
+                    startIcon={<Building2 size={18}/>}
                     onClick={() => navigate('/adminHalls')}
                     sx={getButtonStyles('/adminHalls')}
                 >
@@ -88,7 +81,7 @@ const HeaderAdmin: React.FC<HeaderAdminProps> = ({
 
                 <Button
                     variant="text"
-                    startIcon={<Film size={18} />}
+                    startIcon={<Film size={18}/>}
                     onClick={() => navigate('/adminMovies')}
                     sx={getButtonStyles('/adminMovies')}
                 >
@@ -97,7 +90,7 @@ const HeaderAdmin: React.FC<HeaderAdminProps> = ({
 
                 <Button
                     variant="text"
-                    startIcon={<Ticket size={18} />}
+                    startIcon={<Ticket size={18}/>}
                     onClick={() => navigate('/adminTickets')}
                     sx={getButtonStyles('/adminTickets')}
                 >
@@ -107,7 +100,7 @@ const HeaderAdmin: React.FC<HeaderAdminProps> = ({
                 {onSignOut && (
                     <Button
                         variant="text"
-                        startIcon={<LogOut size={18} />}
+                        startIcon={<LogOut size={18}/>}
                         onClick={onSignOut}
                         sx={{
                             textTransform: 'none',

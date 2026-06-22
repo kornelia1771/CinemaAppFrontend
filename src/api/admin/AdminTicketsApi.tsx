@@ -1,4 +1,4 @@
-import { BASE_URL } from "../ApiHttp";
+import {BASE_URL} from "../ApiHttp";
 
 export interface AdminTicketRequest {
     seatCounter: number;
@@ -26,7 +26,7 @@ export const AdminTicketsApi = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 
@@ -42,10 +42,10 @@ export const AdminTicketsApi = {
     editTicket: async (id: number, request: AdminTicketRequest): Promise<any> => {
         const token = localStorage.getItem("token");
         const response = await fetch(`${BASE_URL}/admin/tickets/${id}`, {
-            method: "PUT", // Zmieniono z PATCH na PUT
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             },
             body: JSON.stringify(request)
         });
@@ -65,7 +65,7 @@ export const AdminTicketsApi = {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 

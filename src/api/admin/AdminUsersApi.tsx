@@ -1,4 +1,5 @@
 import {BASE_URL} from "../ApiHttp";
+
 export interface AdminRegisterRequest {
     firstName?: string;
     lastName?: string;
@@ -34,7 +35,7 @@ export const AdminUsersApi = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             },
             body: JSON.stringify(request)
         });
@@ -50,7 +51,7 @@ export const AdminUsersApi = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 
@@ -69,7 +70,7 @@ export const AdminUsersApi = {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             },
             body: JSON.stringify(request)
         });

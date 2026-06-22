@@ -11,11 +11,9 @@ window.fetch = async (...args) => {
     if (response.status === 401) {
         window.location.href = "/login";
     }
-
     if (response.status === 403) {
         window.location.href = "/access-denied";
     }
-
     return response;
 };
 
@@ -25,6 +23,6 @@ const root = ReactDOM.createRoot(
 
 root.render(
     <React.StrictMode>
-        <App />
+        <App/>
     </React.StrictMode>
 );

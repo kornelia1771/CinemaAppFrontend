@@ -1,4 +1,4 @@
-import { BASE_URL } from "../ApiHttp";
+import {BASE_URL} from "../ApiHttp";
 
 export interface AdminMovieRequest {
     title: string;
@@ -24,7 +24,7 @@ export const AdminMovieApi = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             },
             body: JSON.stringify(request)
         });
@@ -40,7 +40,7 @@ export const AdminMovieApi = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 
@@ -55,7 +55,7 @@ export const AdminMovieApi = {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             },
             body: JSON.stringify(request)
         });
@@ -71,7 +71,7 @@ export const AdminMovieApi = {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 

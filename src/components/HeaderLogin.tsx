@@ -1,10 +1,10 @@
 import React from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
-import { TvMinimalPlay, ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { colors } from '../constants/theme';
-import { LoginTitleRow, LoginTitleText } from '../styles/LoginStyles';
-import { HeaderDefaultTitle } from '../strings/loginStrings';
+import {Box, Typography, IconButton} from '@mui/material';
+import {TvMinimalPlay, ArrowLeft} from 'lucide-react';
+import {useNavigate} from 'react-router-dom';
+import {colors} from '../constants/theme';
+import {LoginTitleRow, LoginTitleText} from '../styles/LoginStyles';
+import {HeaderDefaultTitle} from '../strings/loginStrings';
 
 export default function HeaderLogin() {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ export default function HeaderLogin() {
             sx={{
                 ...LoginTitleRow(),
                 width: '100%',
-                position: 'relative', // Allows absolute positioning of the back arrow
+                position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -25,7 +25,6 @@ export default function HeaderLogin() {
                 boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)'
             }}
         >
-            {/* Back Arrow Button */}
             <IconButton
                 onClick={() => navigate(-1)}
                 sx={{
@@ -38,24 +37,23 @@ export default function HeaderLogin() {
                     }
                 }}
             >
-                <ArrowLeft size={20} />
+                <ArrowLeft size={20}/>
             </IconButton>
 
-            {/* Centered Application Logo and Title - Kliknięcie przekierowuje do / */}
             <Box
                 onClick={() => navigate('/')}
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    cursor: 'pointer', // Pokazuje rączkę po najechaniu myszką
-                    userSelect: 'none', // Blokuje zaznaczanie tekstu przy szybkim klikaniu
+                    cursor: 'pointer',
+                    userSelect: 'none',
                     '&:hover': {
-                        opacity: 0.8 // Delikatny efekt wizualny po najechaniu
+                        opacity: 0.8
                     }
                 }}
             >
-                <TvMinimalPlay size={22} color={colors.black} style={{ display: 'block' }} />
+                <TvMinimalPlay size={22} color={colors.black} style={{display: 'block'}}/>
                 <Typography
                     variant="h6"
                     component="h1"

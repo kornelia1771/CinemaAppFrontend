@@ -1,4 +1,4 @@
-import { BASE_URL } from "../ApiHttp";
+import {BASE_URL} from "../ApiHttp";
 
 export interface AdminHallRequest {
     name: string;
@@ -18,7 +18,7 @@ export const AdminHallsApi = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             },
             body: JSON.stringify(request)
         });
@@ -34,7 +34,7 @@ export const AdminHallsApi = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 
@@ -50,7 +50,7 @@ export const AdminHallsApi = {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             },
             body: JSON.stringify(request)
         });
@@ -67,7 +67,7 @@ export const AdminHallsApi = {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 

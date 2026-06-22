@@ -1,37 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { Box, Container, Paper, Typography, Button, CircularProgress, IconButton, Snackbar, Alert, Divider } from '@mui/material';
-import { ArrowLeft, Minus, Plus, MapPin, Wallet, Calendar, Clock, Users, UserCheck } from 'lucide-react';
-import { colors } from '../../constants/theme';
+import React, {useEffect, useState} from 'react';
+import {useParams, useSearchParams, useNavigate} from 'react-router-dom';
+import {
+    Box, Container, Paper, Typography, Button, CircularProgress, IconButton,
+    Snackbar, Alert, Divider
+} from '@mui/material';
+import {ArrowLeft, Minus, Plus, MapPin, Wallet, Calendar, Clock, Users, UserCheck} from 'lucide-react';
+import {colors} from '../../constants/theme';
 import Header from '../../components/Header';
-import { MovieApi, MovieDetailsResponse, ScreeningResponse } from '../../api/user/MovieApi';
-import { TicketApi } from '../../api/user/TicketApi';
+import {MovieApi, MovieDetailsResponse, ScreeningResponse} from '../../api/user/MovieApi';
+import {TicketApi} from '../../api/user/TicketApi';
 
 export default function BookingPage() {
-    const { movieId } = useParams<{ movieId: string }>();
+    const {movieId} = useParams<{ movieId: string }>();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
     const screeningId = searchParams.get('screeningId');
     const urlDate = searchParams.get('date');
     const urlTime = searchParams.get('time');
-
     const [movieData, setMovieData] = useState<MovieDetailsResponse | null>(null);
     const [currentScreening, setCurrentScreening] = useState<ScreeningResponse | null>(null);
     const [loading, setLoading] = useState(true);
-
-    // States for backend error/success handling
     const [apiError, setApiError] = useState<string | null>(null);
     const [apiSuccess, setApiSuccess] = useState<string | null>(null);
-
     const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
-
-    // Stan blokady przycisku na 5 sekund
     const [isReserving, setIsReserving] = useState<boolean>(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (!token) { navigate('/login'); return; }
+        if (!token) {
+            navigate('/login');
+            return;
+        }
         if (!movieId || !screeningId) {
             setApiError("Data error.");
             setLoading(false);
@@ -46,18 +46,20 @@ export default function BookingPage() {
                 else setApiError("Showtime not found.");
                 setLoading(false);
             })
-            .catch((err) => { setApiError(err.message); setLoading(false); });
+            .catch((err) => {
+                setApiError(err.message);
+                setLoading(false);
+            });
     }, [movieId, screeningId, navigate]);
 
-    const handleSignOut = () => { localStorage.removeItem('token'); navigate('/login'); };
+    const handleSignOut = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
+    };
 
     const handleConfirmReservation = async () => {
         if (!movieId || !screeningId || isReserving) return;
-
-        // Natychmiastowe włączenie blokady
         setIsReserving(true);
-
-        // Uruchomienie licznika 5 sekund, po którym przycisk zostanie odblokowany (np. w razie błędu)
         const cooldown = setTimeout(() => {
             setIsReserving(false);
         }, 5000);
@@ -72,17 +74,16 @@ export default function BookingPage() {
             setApiSuccess("Reservation successful!");
 
             setTimeout(() => {
-                clearTimeout(cooldown); // Czyszczenie timeoutu przed opuszczeniem strony
+                clearTimeout(cooldown);
                 navigate('/tickets');
             }, 2000);
 
         } catch (err: any) {
             setApiError(err.message || "Reservation failed.");
-            // Nie wyłączamy tutaj `setIsReserving(false)`, dzięki czemu blokada trwa pełne 5 sekund z timeoutu
         }
     };
 
-    if (loading) return <CircularProgress />;
+    if (loading) return <CircularProgress/>;
     if (!movieData || !currentScreening) return <Typography color="error">{apiError}</Typography>;
 
     const ticketPrice = currentScreening.ticketPrice ? Number(currentScreening.ticketPrice) : 0;
@@ -102,17 +103,19 @@ export default function BookingPage() {
     };
 
     return (
-        <Box sx={{ backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <Header title="CinemaApp" onSignOut={handleSignOut} />
+        <Box sx={{backgroundColor: colors.lightgrey, minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+            <Header title="CinemaApp" onSignOut={handleSignOut}/>
 
-            <Container maxWidth="md" sx={{ mt: 6, mb: 4 }}>
-                <Paper elevation={3} sx={{ p: 4, borderRadius: '12px', textAlign: 'center', position: 'relative' }}>
+            <Container maxWidth="md" sx={{mt: 6, mb: 4}}>
+                <Paper elevation={3} sx={{p: 4, borderRadius: '12px', textAlign: 'center', position: 'relative'}}>
 
-                    <IconButton onClick={() => navigate(-1)} sx={{ position: 'absolute', left: 16, top: 16, color: colors.black }} disabled={isReserving}>
-                        <ArrowLeft size={20} />
+                    <IconButton onClick={() => navigate(-1)}
+                                sx={{position: 'absolute', left: 16, top: 16, color: colors.black}}
+                                disabled={isReserving}>
+                        <ArrowLeft size={20}/>
                     </IconButton>
 
-                    <Typography variant="h4" sx={{ fontWeight: '700', mb: 4, mt: 2 }}>{movieData.title}</Typography>
+                    <Typography variant="h4" sx={{fontWeight: '700', mb: 4, mt: 2}}>{movieData.title}</Typography>
 
                     <Box sx={{
                         border: `1px solid ${colors.borderGrey || '#ddd'}`,
@@ -123,57 +126,66 @@ export default function BookingPage() {
                         gap: '20px',
                         textAlign: 'left'
                     }}>
-                        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
-                                <MapPin size={18} color={colors.darkgrey} />
+                        <Box sx={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px'}}>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start'}}>
+                                <MapPin size={18} color={colors.darkgrey}/>
                                 <Box>
-                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Hall</Typography>
-                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{currentScreening.hallName}</Typography>
+                                    <Typography variant="caption"
+                                                sx={{color: colors.darkgrey, display: 'block'}}>Hall</Typography>
+                                    <Typography variant="body2"
+                                                sx={{fontWeight: '600'}}>{currentScreening.hallName}</Typography>
                                 </Box>
                             </Box>
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                                <Wallet size={18} color={colors.darkgrey} />
-                                <Box sx={{ textAlign: 'left', width: '90px' }}>
-                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Price</Typography>
-                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{ticketPrice.toFixed(2)} PLN</Typography>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end'}}>
+                                <Wallet size={18} color={colors.darkgrey}/>
+                                <Box sx={{textAlign: 'left', width: '90px'}}>
+                                    <Typography variant="caption"
+                                                sx={{color: colors.darkgrey, display: 'block'}}>Price</Typography>
+                                    <Typography variant="body2"
+                                                sx={{fontWeight: '600'}}>{ticketPrice.toFixed(2)} PLN</Typography>
                                 </Box>
                             </Box>
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
-                                <Calendar size={18} color={colors.darkgrey} />
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start'}}>
+                                <Calendar size={18} color={colors.darkgrey}/>
                                 <Box>
-                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Date</Typography>
-                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{formatDate(urlDate || '')}</Typography>
+                                    <Typography variant="caption"
+                                                sx={{color: colors.darkgrey, display: 'block'}}>Date</Typography>
+                                    <Typography variant="body2"
+                                                sx={{fontWeight: '600'}}>{formatDate(urlDate || '')}</Typography>
                                 </Box>
                             </Box>
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                                <Users size={18} color={colors.darkgrey} />
-                                <Box sx={{ textAlign: 'left', width: '90px' }}>
-                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Total seats</Typography>
-                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{totalSeats}</Typography>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end'}}>
+                                <Users size={18} color={colors.darkgrey}/>
+                                <Box sx={{textAlign: 'left', width: '90px'}}>
+                                    <Typography variant="caption" sx={{color: colors.darkgrey, display: 'block'}}>Total
+                                        seats</Typography>
+                                    <Typography variant="body2" sx={{fontWeight: '600'}}>{totalSeats}</Typography>
                                 </Box>
                             </Box>
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
-                                <Clock size={18} color={colors.darkgrey} />
-                                <Box sx={{ textAlign: 'left', width: '90px' }}>
-                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Time</Typography>
-                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{urlTime}</Typography>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start'}}>
+                                <Clock size={18} color={colors.darkgrey}/>
+                                <Box sx={{textAlign: 'left', width: '90px'}}>
+                                    <Typography variant="caption"
+                                                sx={{color: colors.darkgrey, display: 'block'}}>Time</Typography>
+                                    <Typography variant="body2" sx={{fontWeight: '600'}}>{urlTime}</Typography>
                                 </Box>
                             </Box>
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
-                                <UserCheck size={18} color={colors.darkgrey} />
-                                <Box sx={{ textAlign: 'left', width: '90px' }}>
-                                    <Typography variant="caption" sx={{ color: colors.darkgrey, display: 'block' }}>Free seats</Typography>
-                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>{freeSeats}</Typography>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end'}}>
+                                <UserCheck size={18} color={colors.darkgrey}/>
+                                <Box sx={{textAlign: 'left', width: '90px'}}>
+                                    <Typography variant="caption" sx={{color: colors.darkgrey, display: 'block'}}>Free
+                                        seats</Typography>
+                                    <Typography variant="body2" sx={{fontWeight: '600'}}>{freeSeats}</Typography>
                                 </Box>
                             </Box>
                         </Box>
 
-                        <Divider sx={{ my: 1 }} />
+                        <Divider sx={{my: 1}}/>
 
                         <Box sx={{
                             display: 'flex',
@@ -182,7 +194,7 @@ export default function BookingPage() {
                             gap: 3,
                             mt: 0
                         }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
                                 <Button
                                     variant="outlined"
                                     onClick={() => setNumberOfPeople(p => Math.max(1, p - 1))}
@@ -190,15 +202,15 @@ export default function BookingPage() {
                                     sx={{
                                         borderRadius: '8px', minWidth: '40px', height: '40px',
                                         color: colors.black, borderColor: colors.black,
-                                        '&:hover': { borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)' },
-                                        '&.Mui-disabled': { borderColor: '#ccc', color: '#ccc' }
+                                        '&:hover': {borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)'},
+                                        '&.Mui-disabled': {borderColor: '#ccc', color: '#ccc'}
                                     }}
                                 >
-                                    <Minus size={18} />
+                                    <Minus size={18}/>
                                 </Button>
 
-                                <Box sx={{ textAlign: 'center', minWidth: '40px' }}>
-                                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{numberOfPeople}</Typography>
+                                <Box sx={{textAlign: 'center', minWidth: '40px'}}>
+                                    <Typography variant="h6" sx={{fontWeight: 'bold'}}>{numberOfPeople}</Typography>
                                 </Box>
 
                                 <Button
@@ -208,19 +220,19 @@ export default function BookingPage() {
                                     sx={{
                                         borderRadius: '8px', minWidth: '40px', height: '40px',
                                         color: colors.black, borderColor: colors.black,
-                                        '&:hover': { borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)' },
-                                        '&.Mui-disabled': { borderColor: '#ccc', color: '#ccc' }
+                                        '&:hover': {borderColor: colors.darkgrey, backgroundColor: 'rgba(0,0,0,0.04)'},
+                                        '&.Mui-disabled': {borderColor: '#ccc', color: '#ccc'}
                                     }}
                                 >
-                                    <Plus size={18} />
+                                    <Plus size={18}/>
                                 </Button>
                             </Box>
 
-                            <Box sx={{ textAlign: 'center' }}>
-                                <Typography variant="body2" sx={{ color: colors.darkgrey, mb: 0.5 }}>
+                            <Box sx={{textAlign: 'center'}}>
+                                <Typography variant="body2" sx={{color: colors.darkgrey, mb: 0.5}}>
                                     {numberOfPeople} x {ticketPrice.toFixed(2)} PLN
                                 </Typography>
-                                <Typography variant="h6" sx={{ fontWeight: '800' }}>
+                                <Typography variant="h6" sx={{fontWeight: '800'}}>
                                     Total: {totalCost.toFixed(2)} PLN
                                 </Typography>
                             </Box>
@@ -239,7 +251,7 @@ export default function BookingPage() {
                             textTransform: 'none',
                             fontWeight: '600',
                             width: '100%',
-                            '&:hover': { backgroundColor: colors.darkgrey },
+                            '&:hover': {backgroundColor: colors.darkgrey},
                             '&:disabled': {
                                 backgroundColor: colors.darkgrey,
                                 color: 'rgba(255, 255, 255, 0.7)',
@@ -255,17 +267,16 @@ export default function BookingPage() {
                 </Paper>
             </Container>
 
-            {/* Error Notification Toast */}
             <Snackbar
                 open={apiError !== null}
                 autoHideDuration={3000}
                 onClose={() => setApiError(null)}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
             >
                 <Alert
                     onClose={() => setApiError(null)}
                     severity="error"
-                    sx={{ width: '100%', borderRadius: '8px', fontWeight: '500' }}
+                    sx={{width: '100%', borderRadius: '8px', fontWeight: '500'}}
                     elevation={6}
                     variant="filled"
                 >
@@ -273,17 +284,16 @@ export default function BookingPage() {
                 </Alert>
             </Snackbar>
 
-            {/* Success Notification Toast */}
             <Snackbar
                 open={apiSuccess !== null}
                 autoHideDuration={3000}
                 onClose={() => setApiSuccess(null)}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
             >
                 <Alert
                     onClose={() => setApiSuccess(null)}
                     severity="success"
-                    sx={{ width: '100%', borderRadius: '8px', fontWeight: '500' }}
+                    sx={{width: '100%', borderRadius: '8px', fontWeight: '500'}}
                     elevation={6}
                     variant="filled"
                 >

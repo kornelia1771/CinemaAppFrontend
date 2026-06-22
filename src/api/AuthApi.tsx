@@ -1,4 +1,4 @@
-import { BASE_URL } from "./ApiHttp";
+import {BASE_URL} from "./ApiHttp";
 
 export interface RegisterRequest {
     firstName: string;
@@ -17,7 +17,6 @@ export interface LoginRequest {
     password: string;
 }
 
-// Added for Backend Login integration
 export interface LoginResponse {
     token: string;
 }
@@ -37,7 +36,6 @@ export const AuthApi = {
         if (!response.ok) {
             throw new Error(data.message || 'An unexpected error occurred during registration.');
         }
-
         return data as RegisterResponse;
     },
 
@@ -70,7 +68,6 @@ export const AuthApi = {
         if (!response.ok) {
             throw new Error(data.message || 'An unexpected error occurred during sign in.');
         }
-
         return data as LoginResponse;
     }
 };

@@ -1,16 +1,16 @@
-import { BASE_URL } from "../ApiHttp";
+import {BASE_URL} from "../ApiHttp";
 
 export interface AdminScreeningRequest {
     movieId: number;
     hallId: number;
-    screeningTime: string; // Oczekiwany format: "YYYY-MM-DDTHH:mm:ss" lub "YYYY-MM-DDTHH:mm"
+    screeningTime: string;
     ticketPrice: number;
 }
 
 export interface ScreeningResponse {
     id: number;
     hallId: number;
-    hallName?: string; // Zakładam, że backend zwraca też nazwę sali, jeśli nie, wyświetlimy samo ID
+    hallName?: string;
     screeningTime: string;
     ticketPrice: number;
 }
@@ -31,7 +31,7 @@ export const AdminScreeningApi = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             },
             body: JSON.stringify(request)
         });
@@ -47,7 +47,7 @@ export const AdminScreeningApi = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 
@@ -59,10 +59,10 @@ export const AdminScreeningApi = {
     editScreening: async (id: number, request: AdminScreeningRequest): Promise<any> => {
         const token = localStorage.getItem("token");
         const response = await fetch(`${BASE_URL}/admin/screenings/${id}`, {
-            method: "PATCH", // Zgodnie z @PatchMapping na backendzie
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             },
             body: JSON.stringify(request)
         });
@@ -78,7 +78,7 @@ export const AdminScreeningApi = {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+                ...(token ? {"Authorization": `Bearer ${token}`} : {})
             }
         });
 
