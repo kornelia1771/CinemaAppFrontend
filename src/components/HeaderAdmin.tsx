@@ -68,7 +68,7 @@ const HeaderAdmin: React.FC<HeaderAdminProps> = ({
                 <Button
                     variant="text"
                     startIcon={<Users size={18} />}
-                    onClick={() => navigate('/users')}
+                    onClick={() => navigate('/adminHome')}
                     sx={getButtonStyles('/adminHome')}
                 >
                     Users
