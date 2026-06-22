@@ -10,7 +10,7 @@ import { Trash2, Pencil, Plus, ArrowLeft } from "lucide-react";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import { colors } from "../../constants/theme";
 import { AdminScreeningApi, MovieDetailsResponse, AdminScreeningRequest, ScreeningResponse } from "../../api/AdminScreeningsApi";
-import {AdminHallsApi, AdminHallResponse} from "../../api/AdminHallsApi";
+import { AdminHallsApi, AdminHallResponse } from "../../api/AdminHallsApi";
 
 export default function AdminScreeningsPage() {
     const { movieId } = useParams<{ movieId: string }>();
@@ -85,7 +85,12 @@ export default function AdminScreeningsPage() {
 
     // --- ADD LOGIC ---
     const handleOpenAdd = () => {
-        setAddForm({ movieId: Number(movieId), hallId: halls.length > 0 ? halls[0].id : '' as any, screeningTime: '', ticketPrice: '' as any });
+        setAddForm({
+            movieId: Number(movieId),
+            hallId: halls.length > 0 ? Number(halls[0].id) : ('' as any),
+            screeningTime: '',
+            ticketPrice: '' as any
+        });
         setAddModalOpen(true);
     };
 
@@ -95,7 +100,7 @@ export default function AdminScreeningsPage() {
             await AdminScreeningApi.addScreening({
                 movieId: Number(movieId),
                 hallId: Number(addForm.hallId),
-                screeningTime: addForm.screeningTime, // Formularz type="datetime-local" daje prawidłowy format np. "2026-06-25T18:30"
+                screeningTime: addForm.screeningTime,
                 ticketPrice: Number(addForm.ticketPrice)
             });
             setApiSuccess("Screening added successfully.");
@@ -109,11 +114,22 @@ export default function AdminScreeningsPage() {
     // --- EDIT LOGIC ---
     const handleOpenEdit = (screening: ScreeningResponse) => {
         setScreeningToEdit(screening);
+
+        // KROK 1: Próba pobrania ID z obiektu
+        let currentHallId = screening.hallId ?? (screening as any).hall?.id;
+
+        // KROK 2: Jeśli backend zwraca tylko "hallName", znajdźmy ID sali w tablicy pobranych sal
+        if (!currentHallId && screening.hallName) {
+            const matchedHall = halls.find(h => h.name === screening.hallName);
+            if (matchedHall) {
+                currentHallId = matchedHall.id;
+            }
+        }
+
         setEditForm({
             movieId: Number(movieId),
-            hallId: screening.hallId,
-            // Formatowanie "2026-06-25T18:30:00" na "2026-06-25T18:30" wspierane przez input type="datetime-local"
-            screeningTime: screening.screeningTime.substring(0, 16),
+            hallId: currentHallId ? Number(currentHallId) : ('' as any),
+            screeningTime: screening.screeningTime ? screening.screeningTime.substring(0, 16) : '',
             ticketPrice: screening.ticketPrice
         });
         setEditModalOpen(true);
@@ -149,193 +165,207 @@ export default function AdminScreeningsPage() {
             <HeaderAdmin title="CinemaApp - Admin" onSignOut={handleSignOut} />
 
             <Container maxWidth="lg" sx={{ mt: 6, mb: 4, flexGrow: 1 }}>
+                <Paper elevation={3} sx={{ p: 4, borderRadius: "12px", position: "relative" }}>
 
-                {/* Opcja powrotu */}
-                <Button
-                    startIcon={<ArrowLeft size={18} />}
-                    onClick={() => navigate('/admin/movies')}
-                    sx={{ mb: 2, color: colors.darkgrey, textTransform: 'none', fontWeight: 600, '&:hover': { color: colors.black, backgroundColor: 'transparent' } }}
-                >
-                    Back to Movies
-                </Button>
-
-                <Paper elevation={3} sx={{ p: 4, borderRadius: "12px" }}>
+                    {/* Strzałka powrotu cofająca do ostatniej lokalizacji */}
+                    <IconButton
+                        onClick={() => navigate(-1)}
+                        sx={{ position: 'absolute', left: 16, top: 16, color: colors.black }}
+                    >
+                        <ArrowLeft size={20} />
+                    </IconButton>
 
                     {/* MOVIE CONTEXT HEADER */}
-                    {!loading && movieData && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 4, pb: 3, borderBottom: `1px solid ${colors.borderGrey}` }}>
-                            {movieData.imageUrl && (
-                                <Box component="img" src={movieData.imageUrl} alt={movieData.title} sx={{ width: 80, height: 120, borderRadius: '8px', objectFit: 'cover' }} />
-                            )}
-                            <Box>
-                                <Typography variant="h5" sx={{ fontWeight: 800, color: colors.black }}>
-                                    {movieData.title}
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: colors.darkgrey, mt: 0.5, maxWidth: 600 }}>
-                                    {movieData.description}
-                                </Typography>
-                                <Typography variant="caption" sx={{ display: 'block', mt: 1, fontWeight: 'bold' }}>
-                                    Duration: {movieData.duration} min
-                                </Typography>
-                            </Box>
-                        </Box>
-                    )}
-
-                    {/* TOP BAR */}
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                        <Typography variant="h6" sx={{ fontWeight: 700, color: colors.black }}>
-                            Screenings
-                        </Typography>
-                        <Button
-                            variant="contained"
-                            startIcon={<Plus size={18} />}
-                            onClick={handleOpenAdd}
-                            disabled={loading || halls.length === 0}
-                            sx={{ backgroundColor: colors.black, borderRadius: '8px', textTransform: 'none', fontWeight: 600, '&:hover': { backgroundColor: colors.darkgrey } }}
-                        >
-                            Add Screening
-                        </Button>
-                    </Box>
-
                     {loading ? (
                         <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
                             <CircularProgress sx={{ color: colors.black }} />
                         </Box>
                     ) : (
-                        <TableContainer component={Paper} elevation={0} sx={{ border: `1px solid ${colors.borderGrey || "#ddd"}`, borderRadius: "8px" }}>
-                            <Table sx={{ minWidth: 650 }}>
-                                <TableHead sx={{ backgroundColor: "rgba(0,0,0,0.02)" }}>
-                                    <TableRow>
-                                        <TableCell sx={{ fontWeight: "bold" }}>Date & Time</TableCell>
-                                        <TableCell sx={{ fontWeight: "bold" }}>Hall</TableCell>
-                                        <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Ticket Price</TableCell>
-                                        <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Actions</TableCell>
-                                    </TableRow>
-                                </TableHead>
-
-                                <TableBody>
-                                    {movieData?.screenings?.map((screening) => (
-                                        <TableRow key={screening.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                                            <TableCell sx={{ fontWeight: 500 }}>{formatDateTime(screening.screeningTime)}</TableCell>
-                                            <TableCell>
-                                                {screening.hallName || halls.find(h => h.id === screening.hallId)?.name || `Hall ID: ${screening.hallId}`}
-                                            </TableCell>
-                                            <TableCell sx={{ textAlign: "center", fontWeight: "bold" }}>
-                                                {Number(screening.ticketPrice).toFixed(2)} PLN
-                                            </TableCell>
-                                            <TableCell sx={{ textAlign: "center" }}>
-                                                <IconButton onClick={() => handleOpenEdit(screening)} sx={{ color: colors.darkgrey, "&:hover": { color: colors.black } }}>
-                                                    <Pencil size={18} />
-                                                </IconButton>
-                                                <IconButton onClick={() => handleOpenDelete(screening)} sx={{ color: colors.red || "#d32f2f", "&:hover": { color: "#b71c1c" } }}>
-                                                    <Trash2 size={18} />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-
-                                    {(!movieData?.screenings || movieData.screenings.length === 0) && (
-                                        <TableRow>
-                                            <TableCell colSpan={4} sx={{ textAlign: "center", py: 4, color: colors.darkgrey }}>
-                                                No screenings scheduled for this movie.
-                                            </TableCell>
-                                        </TableRow>
+                        <>
+                            {movieData && (
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 4, pb: 3, pt: 2, borderBottom: `1px solid ${colors.borderGrey}` }}>
+                                    {movieData.imageUrl && (
+                                        <Box component="img" src={movieData.imageUrl} alt={movieData.title} sx={{ width: 80, height: 120, borderRadius: '8px', objectFit: 'cover' }} />
                                     )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                                    <Box>
+                                        <Typography variant="h5" sx={{ fontWeight: 800, color: colors.black }}>
+                                            {movieData.title}
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ color: colors.darkgrey, mt: 0.5, maxWidth: 600 }}>
+                                            {movieData.description}
+                                        </Typography>
+                                        <Typography variant="caption" sx={{ display: 'block', mt: 1, fontWeight: 'bold' }}>
+                                            Duration: {movieData.duration} min
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            )}
+
+                            {/* TOP BAR */}
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                                <Typography variant="h6" sx={{ fontWeight: 700, color: colors.black }}>
+                                    Screenings
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    startIcon={<Plus size={18} />}
+                                    onClick={handleOpenAdd}
+                                    disabled={halls.length === 0}
+                                    sx={{ backgroundColor: colors.black, borderRadius: '8px', textTransform: 'none', fontWeight: 600, '&:hover': { backgroundColor: colors.darkgrey } }}
+                                >
+                                    Add Screening
+                                </Button>
+                            </Box>
+
+                            <TableContainer component={Paper} elevation={0} sx={{ border: `1px solid ${colors.borderGrey || "#ddd"}`, borderRadius: "8px" }}>
+                                <Table sx={{ minWidth: 650 }}>
+                                    <TableHead sx={{ backgroundColor: "rgba(0,0,0,0.02)" }}>
+                                        <TableRow>
+                                            <TableCell sx={{ fontWeight: "bold" }}>Date & Time</TableCell>
+                                            <TableCell sx={{ fontWeight: "bold" }}>Hall</TableCell>
+                                            <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Ticket Price</TableCell>
+                                            <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Actions</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+
+                                    <TableBody>
+                                        {movieData?.screenings?.map((screening) => (
+                                            <TableRow key={screening.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                                <TableCell sx={{ fontWeight: 500 }}>{formatDateTime(screening.screeningTime)}</TableCell>
+                                                <TableCell>
+                                                    {screening.hallName || halls.find(h => Number(h.id) === Number(screening.hallId))?.name || `Hall ID: ${screening.hallId}`}
+                                                </TableCell>
+                                                <TableCell sx={{ textAlign: "center", fontWeight: "bold" }}>
+                                                    {Number(screening.ticketPrice).toFixed(2)} PLN
+                                                </TableCell>
+                                                <TableCell sx={{ textAlign: "center" }}>
+                                                    <IconButton onClick={() => handleOpenEdit(screening)} sx={{ color: colors.darkgrey, "&:hover": { color: colors.black } }}>
+                                                        <Pencil size={18} />
+                                                    </IconButton>
+                                                    <IconButton onClick={() => handleOpenDelete(screening)} sx={{ color: colors.red || "#d32f2f", "&:hover": { color: "#b71c1c" } }}>
+                                                        <Trash2 size={18} />
+                                                    </IconButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+
+                                        {(!movieData?.screenings || movieData.screenings.length === 0) && (
+                                            <TableRow>
+                                                <TableCell colSpan={4} sx={{ textAlign: "center", py: 4, color: colors.darkgrey }}>
+                                                    No screenings scheduled for this movie.
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </>
                     )}
                 </Paper>
             </Container>
 
             {/* --- ADD SCREENING MODAL --- */}
             <Dialog open={addModalOpen} onClose={() => setAddModalOpen(false)} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: '12px', p: 1 } }}>
-                <form onSubmit={handleConfirmAdd}>
-                    <DialogTitle sx={{ fontWeight: '700', color: colors.black }}>Add Screening</DialogTitle>
-                    <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important' }}>
+                {addModalOpen && (
+                    <form onSubmit={handleConfirmAdd}>
+                        <DialogTitle sx={{ fontWeight: '700', color: colors.black }}>Add Screening</DialogTitle>
+                        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important' }}>
 
-                        <FormControl fullWidth required>
-                            <InputLabel>Hall</InputLabel>
-                            <Select value={addForm.hallId} label="Hall" onChange={(e) => setAddForm({...addForm, hallId: Number(e.target.value)})}>
-                                {halls.map((hall) => (
-                                    <MenuItem key={hall.id} value={hall.id}>{hall.name} ({hall.totalSeats} seats)</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                            <FormControl fullWidth required>
+                                <InputLabel id="add-hall-select-label">Hall</InputLabel>
+                                <Select
+                                    labelId="add-hall-select-label"
+                                    value={addForm.hallId ? Number(addForm.hallId) : ''}
+                                    label="Hall"
+                                    onChange={(e) => setAddForm({...addForm, hallId: Number(e.target.value)})}
+                                >
+                                    {halls.map((hall) => (
+                                        <MenuItem key={hall.id} value={Number(hall.id)}>{hall.name} ({hall.totalSeats} seats)</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
 
-                        <TextField
-                            label="Screening Time"
-                            type="datetime-local"
-                            required
-                            fullWidth
-                            InputLabelProps={{ shrink: true }}
-                            value={addForm.screeningTime}
-                            onChange={(e) => setAddForm({...addForm, screeningTime: e.target.value})}
-                        />
+                            <TextField
+                                label="Screening Time"
+                                type="datetime-local"
+                                required
+                                fullWidth
+                                InputLabelProps={{ shrink: true }}
+                                value={addForm.screeningTime}
+                                onChange={(e) => setAddForm({...addForm, screeningTime: e.target.value})}
+                            />
 
-                        <TextField
-                            label="Ticket Price (PLN)"
-                            type="number"
-                            required
-                            fullWidth
-                            inputProps={{ min: 0, step: "0.01" }}
-                            value={addForm.ticketPrice}
-                            onChange={(e) => setAddForm({...addForm, ticketPrice: e.target.value as any})}
-                        />
+                            <TextField
+                                label="Ticket Price (PLN)"
+                                type="number"
+                                required
+                                fullWidth
+                                inputProps={{ min: 0, step: "0.01" }}
+                                value={addForm.ticketPrice}
+                                onChange={(e) => setAddForm({...addForm, ticketPrice: e.target.value as any})}
+                            />
 
-                    </DialogContent>
-                    <DialogActions sx={{ px: 3, pb: 2, mt: 1 }}>
-                        <Box sx={{ display: 'flex', width: '100%', gap: '12px' }}>
-                            <Button onClick={() => setAddModalOpen(false)} variant="outlined" sx={{ flex: 1, borderRadius: '8px', textTransform: 'none', borderColor: colors.black, color: colors.black, fontWeight: '600' }}>Cancel</Button>
-                            <Button type="submit" variant="contained" sx={{ flex: 1, borderRadius: '8px', textTransform: 'none', backgroundColor: colors.black, color: 'white', fontWeight: '600' }}>Save</Button>
-                        </Box>
-                    </DialogActions>
-                </form>
+                        </DialogContent>
+                        <DialogActions sx={{ px: 3, pb: 2, mt: 1 }}>
+                            <Box sx={{ display: 'flex', width: '100%', gap: '12px' }}>
+                                <Button onClick={() => setAddModalOpen(false)} variant="outlined" sx={{ flex: 1, borderRadius: '8px', textTransform: 'none', borderColor: colors.black, color: colors.black, fontWeight: '600' }}>Cancel</Button>
+                                <Button type="submit" variant="contained" sx={{ flex: 1, borderRadius: '8px', textTransform: 'none', backgroundColor: colors.black, color: 'white', fontWeight: '600' }}>Save</Button>
+                            </Box>
+                        </DialogActions>
+                    </form>
+                )}
             </Dialog>
 
             {/* --- EDIT SCREENING MODAL --- */}
             <Dialog open={editModalOpen} onClose={() => setEditModalOpen(false)} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: '12px', p: 1 } }}>
-                <form onSubmit={handleConfirmEdit}>
-                    <DialogTitle sx={{ fontWeight: '700', color: colors.black }}>Edit Screening</DialogTitle>
-                    <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important' }}>
+                {editModalOpen && (
+                    <form onSubmit={handleConfirmEdit}>
+                        <DialogTitle sx={{ fontWeight: '700', color: colors.black }}>Edit Screening</DialogTitle>
+                        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: '16px', pt: '12px !important' }}>
 
-                        <FormControl fullWidth required>
-                            <InputLabel>Hall</InputLabel>
-                            <Select value={editForm.hallId} label="Hall" onChange={(e) => setEditForm({...editForm, hallId: Number(e.target.value)})}>
-                                {halls.map((hall) => (
-                                    <MenuItem key={hall.id} value={hall.id}>{hall.name} ({hall.totalSeats} seats)</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                            <FormControl fullWidth required>
+                                <InputLabel id="edit-hall-select-label">Hall</InputLabel>
+                                <Select
+                                    labelId="edit-hall-select-label"
+                                    value={editForm.hallId ? Number(editForm.hallId) : ''}
+                                    label="Hall"
+                                    onChange={(e) => setEditForm({...editForm, hallId: Number(e.target.value)})}
+                                >
+                                    {halls.map((hall) => (
+                                        <MenuItem key={hall.id} value={Number(hall.id)}>{hall.name} ({hall.totalSeats} seats)</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
 
-                        <TextField
-                            label="Screening Time"
-                            type="datetime-local"
-                            required
-                            fullWidth
-                            InputLabelProps={{ shrink: true }}
-                            value={editForm.screeningTime}
-                            onChange={(e) => setEditForm({...editForm, screeningTime: e.target.value})}
-                        />
+                            <TextField
+                                label="Screening Time"
+                                type="datetime-local"
+                                required
+                                fullWidth
+                                InputLabelProps={{ shrink: true }}
+                                value={editForm.screeningTime}
+                                onChange={(e) => setEditForm({...editForm, screeningTime: e.target.value})}
+                            />
 
-                        <TextField
-                            label="Ticket Price (PLN)"
-                            type="number"
-                            required
-                            fullWidth
-                            inputProps={{ min: 0, step: "0.01" }}
-                            value={editForm.ticketPrice}
-                            onChange={(e) => setEditForm({...editForm, ticketPrice: e.target.value as any})}
-                        />
+                            <TextField
+                                label="Ticket Price (PLN)"
+                                type="number"
+                                required
+                                fullWidth
+                                inputProps={{ min: 0, step: "0.01" }}
+                                value={editForm.ticketPrice}
+                                onChange={(e) => setEditForm({...editForm, ticketPrice: e.target.value as any})}
+                            />
 
-                    </DialogContent>
-                    <DialogActions sx={{ px: 3, pb: 2, mt: 1 }}>
-                        <Box sx={{ display: 'flex', width: '100%', gap: '12px' }}>
-                            <Button onClick={() => setEditModalOpen(false)} variant="outlined" sx={{ flex: 1, borderRadius: '8px', textTransform: 'none', borderColor: colors.black, color: colors.black, fontWeight: '600' }}>Cancel</Button>
-                            <Button type="submit" variant="contained" sx={{ flex: 1, borderRadius: '8px', textTransform: 'none', backgroundColor: colors.black, color: 'white', fontWeight: '600' }}>Save</Button>
-                        </Box>
-                    </DialogActions>
-                </form>
+                        </DialogContent>
+                        <DialogActions sx={{ px: 3, pb: 2, mt: 1 }}>
+                            <Box sx={{ display: 'flex', width: '100%', gap: '12px' }}>
+                                <Button onClick={() => setEditModalOpen(false)} variant="outlined" sx={{ flex: 1, borderRadius: '8px', textTransform: 'none', borderColor: colors.black, color: colors.black, fontWeight: '600' }}>Cancel</Button>
+                                <Button type="submit" variant="contained" sx={{ flex: 1, borderRadius: '8px', textTransform: 'none', backgroundColor: colors.black, color: 'white', fontWeight: '600' }}>Save</Button>
+                            </Box>
+                        </DialogActions>
+                    </form>
+                )}
             </Dialog>
 
             {/* --- DELETE SCREENING MODAL --- */}
