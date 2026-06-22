@@ -4,7 +4,7 @@ import { Box, Container, Paper, Typography, Button, CircularProgress, IconButton
 import { Clock, ArrowLeft, Calendar } from 'lucide-react';
 import { colors, fontSizes } from '../../constants/theme';
 import Header from '../../components/Header';
-import { MovieApi, MovieDetailsResponse, ScreeningResponse } from '../../api/MovieApi';
+import { MovieApi, MovieDetailsResponse, ScreeningResponse } from '../../api/user/MovieApi';
 
 interface GroupedScreenings {
     [dateKey: string]: {

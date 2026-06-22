@@ -4,8 +4,8 @@ import { Box, Container, Paper, Typography, Button, CircularProgress, IconButton
 import { ArrowLeft, Minus, Plus, MapPin, Wallet, Calendar, Clock, Users, UserCheck } from 'lucide-react';
 import { colors } from '../../constants/theme';
 import Header from '../../components/Header';
-import { MovieApi, MovieDetailsResponse, ScreeningResponse } from '../../api/MovieApi';
-import { TicketApi } from '../../api/TicketApi';
+import { MovieApi, MovieDetailsResponse, ScreeningResponse } from '../../api/user/MovieApi';
+import { TicketApi } from '../../api/user/TicketApi';
 
 export default function BookingPage() {
     const { movieId } = useParams<{ movieId: string }>();

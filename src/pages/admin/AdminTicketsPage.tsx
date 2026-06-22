@@ -8,7 +8,7 @@ import {
 import { Pencil, Ban } from "lucide-react";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import { colors } from "../../constants/theme";
-import { AdminTicketsApi, AdminTicketResponse, AdminTicketRequest } from "../../api/AdminTicketsApi";
+import { AdminTicketsApi, AdminTicketResponse, AdminTicketRequest } from "../../api/admin/AdminTicketsApi";
 
 export default function AdminTicketsPage() {
     const navigate = useNavigate();

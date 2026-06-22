@@ -1,20 +1,26 @@
-import { BASE_URL } from "./ApiHttp";
+import { BASE_URL } from "../ApiHttp";
 
-export interface AdminHallRequest {
-    name: string;
-    totalSeats: number;
+export interface AdminMovieRequest {
+    title: string;
+    description: string;
+    duration: number;
+    imageUrl: string;
+    available: boolean;
 }
 
-export interface AdminHallResponse {
+export interface AdminMovieResponse {
     id: number;
-    name: string;
-    totalSeats: number;
+    title: string;
+    description: string;
+    duration: number;
+    imageUrl: string;
+    available: boolean;
 }
 
-export const AdminHallsApi = {
-    addHall: async (request: AdminHallRequest): Promise<any> => {
+export const AdminMovieApi = {
+    addMovie: async (request: AdminMovieRequest): Promise<any> => {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${BASE_URL}/admin/halls`, {
+        const response = await fetch(`${BASE_URL}/admin/movies`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -24,13 +30,13 @@ export const AdminHallsApi = {
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Failed to add hall.");
+        if (!response.ok) throw new Error(data.message || "Failed to add movie.");
         return data;
     },
 
-    getAllHalls: async (): Promise<AdminHallResponse[]> => {
+    getAllMovies: async (): Promise<AdminMovieResponse[]> => {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${BASE_URL}/admin/halls`, {
+        const response = await fetch(`${BASE_URL}/admin/movies`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -39,14 +45,13 @@ export const AdminHallsApi = {
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Failed to fetch halls.");
-        return data as AdminHallResponse[];
+        if (!response.ok) throw new Error(data.message || "Failed to fetch movies.");
+        return data as AdminMovieResponse[];
     },
 
-    editHall: async (hallId: number, request: AdminHallRequest): Promise<any> => {
+    editMovie: async (movieId: number, request: AdminMovieRequest): Promise<any> => {
         const token = localStorage.getItem("token");
-
-        const response = await fetch(`${BASE_URL}/admin/halls/${hallId}`, {
+        const response = await fetch(`${BASE_URL}/admin/movies/${movieId}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -56,14 +61,13 @@ export const AdminHallsApi = {
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Failed to update hall.");
+        if (!response.ok) throw new Error(data.message || "Failed to update movie.");
         return data;
     },
 
-    deleteHall: async (hallId: number): Promise<any> => {
+    deleteMovie: async (movieId: number): Promise<any> => {
         const token = localStorage.getItem("token");
-
-        const response = await fetch(`${BASE_URL}/admin/halls/${hallId}`, {
+        const response = await fetch(`${BASE_URL}/admin/movies/${movieId}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -72,7 +76,7 @@ export const AdminHallsApi = {
         });
 
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Failed to delete hall.");
+        if (!response.ok) throw new Error(data.message || "Failed to delete movie.");
         return data;
     }
 };

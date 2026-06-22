@@ -9,8 +9,8 @@ import {
 import { Trash2, Pencil, Plus, ArrowLeft } from "lucide-react";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import { colors } from "../../constants/theme";
-import { AdminScreeningApi, MovieDetailsResponse, AdminScreeningRequest, ScreeningResponse } from "../../api/AdminScreeningsApi";
-import { AdminHallsApi, AdminHallResponse } from "../../api/AdminHallsApi";
+import { AdminScreeningApi, MovieDetailsResponse, AdminScreeningRequest, ScreeningResponse } from "../../api/admin/AdminScreeningsApi";
+import { AdminHallsApi, AdminHallResponse } from "../../api/admin/AdminHallsApi";
 
 export default function AdminScreeningsPage() {
     const { movieId } = useParams<{ movieId: string }>();

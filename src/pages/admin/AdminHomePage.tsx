@@ -8,7 +8,7 @@ import {
 import { Trash2, Pencil, Plus } from "lucide-react";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import { colors } from "../../constants/theme";
-import { AdminUsersApi, AdminUserResponse, AdminUserEditRequest, AdminRegisterRequest } from "../../api/AdminUsersApi";
+import { AdminUsersApi, AdminUserResponse, AdminUserEditRequest, AdminRegisterRequest } from "../../api/admin/AdminUsersApi";
 
 export default function AdminHomePage() {
     const navigate = useNavigate();

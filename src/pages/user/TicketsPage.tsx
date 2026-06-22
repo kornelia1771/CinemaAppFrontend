@@ -7,7 +7,7 @@ import {
 import { Ticket, MapPin, Users, Calendar, Wallet, Clock } from 'lucide-react';
 import { colors, fontSizes } from '../../constants/theme';
 import Header from '../../components/Header';
-import { TicketApi, TicketResponse } from '../../api/TicketApi';
+import { TicketApi, TicketResponse } from '../../api/user/TicketApi';
 
 export default function TicketsPage() {
     const navigate = useNavigate();

@@ -1,4 +1,4 @@
-import {BASE_URL} from "./ApiHttp";
+import {BASE_URL} from "../ApiHttp";
 export interface AdminRegisterRequest {
     firstName?: string;
     lastName?: string;

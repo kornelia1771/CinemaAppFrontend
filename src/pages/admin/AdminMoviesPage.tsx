@@ -9,7 +9,7 @@ import {
 import { Trash2, Pencil, Plus, Image as ImageIcon } from "lucide-react";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import { colors } from "../../constants/theme";
-import { AdminMovieApi, AdminMovieResponse, AdminMovieRequest } from "../../api/AdminMoviesApi";
+import { AdminMovieApi, AdminMovieResponse, AdminMovieRequest } from "../../api/admin/AdminMoviesApi";
 
 export default function AdminMoviesPage() {
     const navigate = useNavigate();

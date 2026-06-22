@@ -5,7 +5,7 @@ import { Ticket } from 'lucide-react';
 import { colors } from '../../constants/theme';
 import { decodeJWT } from '../../helper/LoginHelper';
 import Header from '../../components/Header';
-import {MovieApi, MovieResponse} from '../../api/MovieApi'; // Import nowo utworzonego API
+import {MovieApi, MovieResponse} from '../../api/user/MovieApi'; // Import nowo utworzonego API
 
 
 export default function HomePage() {

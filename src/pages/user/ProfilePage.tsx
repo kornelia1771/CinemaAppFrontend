@@ -6,7 +6,7 @@ import { colors, fontSizes } from '../../constants/theme';
 import Header from '../../components/Header';
 
 // Importy z UserAPI
-import { getUserData, updateUserData } from '../../api/UserApi';
+import { getUserData, updateUserData } from '../../api/user/UserApi';
 
 // Import walidacji i pomocników
 import { capitalizeFirst } from '../../helper/LoginHelper';

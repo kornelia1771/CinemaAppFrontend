@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ApiTest from "./api/ApiTest";
 import WelcomePage from "./pages/login/WelcomePage";
 import RegisterPage from "./pages/login/RegisterPage";
 import LoginPage from "./pages/login/LoginPage";
@@ -44,14 +43,6 @@ function App() {
                 <Route path="/admin/screenings/:movieId" element={<AdminScreeningsPage />} />
                 <Route path="/adminTickets" element={<AdminTicketsPage />} />
                 {/* Poprzednia ścieżka do sprawdzania połączenia ze Spring Bootem */}
-                <Route path="/test" element={
-                    <div className="App">
-                        <header className="App-header">
-                            <h2>API Test Panel</h2>
-                            <ApiTest />
-                        </header>
-                    </div>
-                } />
             </Routes>
         </BrowserRouter>
     );
