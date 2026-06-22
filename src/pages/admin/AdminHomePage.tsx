@@ -8,7 +8,7 @@ import {
 import { Trash2, Pencil, Plus } from "lucide-react";
 import HeaderAdmin from "../../components/HeaderAdmin";
 import { colors } from "../../constants/theme";
-import { AdminUserApi, AdminUserResponse, AdminUserEditRequest, AdminRegisterRequest } from "../../api/AdminUserApi";
+import { AdminUsersApi, AdminUserResponse, AdminUserEditRequest, AdminRegisterRequest } from "../../api/AdminUsersApi";
 
 export default function AdminHomePage() {
     const navigate = useNavigate();
@@ -37,7 +37,7 @@ export default function AdminHomePage() {
     const fetchUsers = async () => {
         try {
             setLoading(true);
-            const data = await AdminUserApi.getAllUsers();
+            const data = await AdminUsersApi.getAllUsers();
             setUsers(data);
         } catch (err: any) {
             setApiError(err.message || "Failed to load users.");
@@ -61,7 +61,7 @@ export default function AdminHomePage() {
     const handleConfirmAdd = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await AdminUserApi.registerAdmin(addForm);
+            await AdminUsersApi.registerAdmin(addForm);
             setApiSuccess("User registered successfully.");
             fetchUsers();
             setAddModalOpen(false);
@@ -91,7 +91,7 @@ export default function AdminHomePage() {
             const payload = { ...editForm };
             if (!payload.password) delete payload.password;
 
-            await AdminUserApi.editUser(userToEdit.id, payload);
+            await AdminUsersApi.editUser(userToEdit.id, payload);
             setApiSuccess("User updated successfully.");
             fetchUsers();
             setEditModalOpen(false);

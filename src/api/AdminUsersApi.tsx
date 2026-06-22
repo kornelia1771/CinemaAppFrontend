@@ -27,7 +27,7 @@ export interface AdminUserEditRequest {
     roles?: string[];
 }
 
-export const AdminUserApi = {
+export const AdminUsersApi = {
     registerAdmin: async (request: AdminRegisterRequest): Promise<any> => {
         const token = localStorage.getItem("token");
         const response = await fetch(`${BASE_URL}/admin/user/register`, {
