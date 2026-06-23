@@ -10,6 +10,7 @@ window.fetch = async (...args) => {
     const response = await originalFetch(...args);
 
     if (response.status === 401) {
+        localStorage.removeItem("token");
         window.location.href = "/login";
     }
     if (response.status === 403) {
